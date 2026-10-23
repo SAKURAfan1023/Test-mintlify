@@ -1,72 +1,132 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mintlify Starter Kit",
+  "name": "TextIn Resources",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#1A66FF",
+    "light": "#A9A1FF",
+    "dark": "#1A66FF"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/images/brand/favicon.ico",
   "navigation": {
-    "pages": [
+    "groups": [
       {
-        "group": "Getting Started",
+        "group": "Resources",
         "pages": [
           "index",
-          "quickstart"
+          "news/list",
+          "cases/list"
+        ]
+      },
+      {
+        "group": "Journal",
+        "pages": [
+          "news/20260813171405940",
+          "news/20260731145844973",
+          "news/20260727145812209",
+          "news/20260721144155912",
+          "news/20260922154509747"
+        ]
+      },
+      {
+        "group": "Customer stories",
+        "pages": [
+          "cases/20261016113656382",
+          "cases/20260915144322620",
+          "cases/20260731103033264",
+          "cases/20260422104515242",
+          "cases/20260115154400225"
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
+    ]
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/images/brand/logo-dark.webp",
+    "dark": "/images/brand/logo-light.webp",
+    "href": "/"
   },
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:support@mintlify.com"
+        "label": "Resources",
+        "href": "/"
+      },
+      {
+        "label": "Journal",
+        "href": "/news/list"
+      },
+      {
+        "label": "Customer stories",
+        "href": "/cases/list"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.mintlify.com"
+      "label": "Contact us",
+      "href": "https://www.textin.ai/contact"
     }
   },
   "contextual": {
-    "options": [
-      "copy",
-      "view",
-      "chatgpt",
-      "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
-    ]
+    "options": []
   },
   "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+    "links": [
+      {
+        "header": "Community",
+        "items": [
+          {
+            "label": "Discord",
+            "href": "https://discord.gg/eV3GqEYNwy"
+          }
+        ]
+      },
+      {
+        "header": "Product",
+        "items": [
+          {
+            "label": "xParse",
+            "href": "https://www.textin.ai/xparse"
+          },
+          {
+            "label": "DocFlow",
+            "href": "https://www.textin.ai/en/docflow"
+          },
+          {
+            "label": "Document Crop",
+            "href": "https://www.textin.ai/document-crop"
+          }
+        ]
+      },
+      {
+        "header": "Legal",
+        "items": [
+          {
+            "label": "Terms",
+            "href": "https://www.textin.ai/terms"
+          },
+          {
+            "label": "Privacy Policy",
+            "href": "https://www.textin.ai/privacy"
+          },
+          {
+            "label": "Security",
+            "href": "https://www.textin.ai/security"
+          }
+        ]
+      }
+    ]
+  },
+  "appearance": {
+    "default": "light",
+    "strict": true
+  },
+  "background": {
+    "color": {
+      "light": "#FFFFFF",
+      "dark": "#FFFFFF"
     }
+  },
+  "search": {
+    "prompt": "Search articles and customer stories…"
   }
 }

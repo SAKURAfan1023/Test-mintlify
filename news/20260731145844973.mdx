@@ -1,0 +1,96 @@
+---
+title: Parsing dense tables without losing a row
+description: Small text, long identifiers, and large outputs can make an orderly table surprisingly difficult to parse.
+sidebarTitle: Parsing dense tables without losing a row
+keywords:
+- xParse
+- Engineering
+- document intelligence
+mode: center
+hideFooterPagination: true
+timestamp: false
+date: '2026-07-31'
+product: xParse
+cover: /images/journal/dense-tables.webp
+source: https://www.textin.com/news/20260731145844973
+category: Engineering
+og:image: /images/journal/dense-tables.webp
+---
+
+<div className="article-meta not-prose"><a className="article-back" href="/news/list" data-content-back><span aria-hidden="true">←</span> Back to journal</a><div><span>Engineering</span><span>xParse</span><time dateTime="2026-07-31">2026-07-31</time></div></div>
+
+A supplier directory may have perfectly regular columns and no merged cells. At a glance, the parsed result looks right. But deeper in the product-name column, a chemical name has changed by one character. Farther down, errors become more frequent.
+
+One example involves a Chinese chemical name whose altered character changes the substance being described. This is a recognition error with business consequences, even though the table structure appears intact.
+
+## Density creates a different kind of challenge
+
+Dense tables compress many rows and columns into one page. They appear in bank statements, supplier directories, laboratory reports, supply chain lists, and market data. Cells may contain dates, company names, product descriptions, long identifiers, or amounts in very small type.
+
+The challenge is often preserving individual characters. A table can be structurally simple while its contents are difficult to read.
+
+## Two limits to test
+
+### Input resolution
+
+Visual models have input limits, such as maximum dimensions, patches, or visual tokens. Resizing a dense page can leave very little representation for each row. Long names and uncommon terms become vulnerable to character substitutions.
+
+Small marks matter as much as letters. Lose the decimal point in `1000.00`, and the result can become `100000`. A missing minus sign or percentage mark changes the meaning of a number while leaving a plausible-looking value.
+
+### Output length
+
+Reading a table and writing the result are separate constraints. A 100-row, 50-column table can require a very large output once cell contents and Markdown or JSON structure are included. Some model configurations may truncate the result or become less consistent near the end.
+
+Inspect the second half of the table as carefully as the first. A convincing first screen does not establish that the full dataset survived.
+
+![Conceptual illustration of dense rows and source-linked structured data](/images/journal/dense-tables.webp)
+
+*Conceptual illustration for this English edition.*
+
+## How errors spread
+
+In a data pipeline, a shifted column can put a product name under a company field. The record enters the expected database table, which makes the error harder to locate than an obvious missing row.
+
+In RAG, a corrupted technical term can prevent retrieval. A damaged numeric value can also be faithfully quoted by a language model and still be wrong. The error was already present before retrieval.
+
+Audit systems may produce excessive exceptions—or miss real ones—when transaction values change. Agents selecting suppliers can exclude a suitable business or accept an unsuitable one based on the same corrupted fields.
+
+## A practical evaluation checklist
+
+### Preserve long names and identifiers
+
+Compare full company names, chemical names, model numbers, and long number strings against the source. Include rare terms rather than testing only familiar vocabulary.
+
+### Keep rows and columns stable
+
+Check the first, middle, and final rows. Compare row counts and field associations. A value that was recognized correctly but assigned to the wrong column is still an extraction failure.
+
+### Avoid invented completion
+
+Look for duplicated rows, copied neighboring values, or plausible terms absent from the original page. Unclear input should enter an appropriate review process instead of being silently completed from context.
+
+In a supplier-directory evaluation, xParse maintained field alignment through a 300-row example while addressing these failure modes. Evaluate the same properties on your own document collection.
+
+## Bring the densest sample you have
+
+Use a real directory, statement, or report with small text and long fields. Check character fidelity, complete row coverage, column alignment, and unsupported additions. Include low-quality scans in the evaluation if they are part of your production workload.
+
+The quality of a downstream data system starts with the values it receives. Dense tables deserve a full-table comparison, not a spot check of the first few rows.
+
+<Card title="Evaluate document parsing with xParse" href="https://www.textin.ai/xparse">Explore structured outputs for complex tables and documents.</Card>
+
+---
+
+## Keep exploring
+
+<Columns cols={2}>
+  <Card title="From long documents to retrieval-ready knowledge" href="/news/20260727145812209">xParse · Journal</Card>
+  <Card title="Making every contract clause verifiable" href="/cases/20261016113656382">Customer story · xParse</Card>
+</Columns>
+
+<div className="article-return not-prose" role="navigation" aria-label="Article navigation"><a className="article-back" href="/news/list" data-content-back><span aria-hidden="true">←</span> Back to journal</a></div>
+
+<section className="resource-cta article-cta not-prose" aria-label="Contact TextIn">
+  <h2>Put document AI<br /><span className="cta-accent">to work.</span></h2>
+  <a className="site-button" href="https://www.textin.ai/contact">Talk to our team</a>
+</section>

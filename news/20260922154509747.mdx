@@ -1,0 +1,104 @@
+---
+title: Turn exam papers into structured learning data
+description: Preserve formulas, question structure, and student work before building grading and learning applications.
+sidebarTitle: Turn exam papers into structured learning data
+keywords:
+- xParse
+- Guides
+- document intelligence
+mode: center
+hideFooterPagination: true
+timestamp: false
+date: '2026-09-29'
+product: xParse
+cover: /images/journal/education.webp
+source: https://www.textin.com/news/20260922154509747
+category: Guides
+og:image: /images/journal/education.webp
+---
+
+<div className="article-meta not-prose"><a className="article-back" href="/news/list" data-content-back><span aria-hidden="true">←</span> Back to journal</a><div><span>Guides</span><span>xParse</span><time dateTime="2026-09-29">2026-09-29</time></div></div>
+
+An exam paper can combine printed questions, handwritten answers, diagrams, formulas, and a teacher’s red pen. A phone photo adds perspective distortion, shadows, and folds. Turning it into useful data requires more than a plain text transcript.
+
+The first task is to preserve what is on the page. Grading, mistake analysis, and practice generation belong to later application stages.
+
+## Preserve the structure of a question
+
+Multi-column layouts can separate a question stem from its options or diagram. Answer areas may sit between printed text, and question elements can cross column boundaries.
+
+A useful parsed result keeps the reading order and associates text, formulas, tables, figures, and handwriting with their locations. This lets downstream software build question records rather than guessing relationships from a flattened text stream.
+
+## Formulas need mathematical meaning
+
+For math, physics, and chemistry, a missing radical or subscript changes the problem. The difference between `v = \sqrt{2gh}` and `v = 2gh` is not cosmetic.
+
+xParse outputs can represent inline and display formulas in LaTeX, including radicals, subscripts, integrals, and chemical notation. Validate representative formula types in your own samples, especially when the source is a low-quality photo.
+
+## Distinguish print, handwriting, and annotations
+
+Printed content, a student’s work, and grading marks have different roles. Preserve their positions and identities so that later stages can decide which layer to use.
+
+A blank-paper workflow may recognize handwriting and then apply a separate removal step. Recognition and removal should be treated as distinct operations rather than assuming that every parsing response contains a cleaned paper.
+
+![Conceptual illustration separating document parsing, grading, and application delivery](/images/journal/education.webp)
+
+*Architecture illustration for this English edition; it is not a screenshot of a student record.*
+
+## Keep parsing separate from grading
+
+Consider this simplified example from the source article:
+
+**Question:** For `x² − 4x + m = 0` to have two equal roots, what is `m`?
+
+**Student’s work:** `Δ = 16 − 4m = 0`, followed by `m = −4`.
+
+The parsing stage must retain the incorrect final answer. Silently “correcting” it to `4` would destroy the evidence needed for grading.
+
+A later grading model can identify that the discriminant setup is correct but the final sign is wrong. An illustrative marking scheme awards 5 of 10 points: five for the method and zero for the final result. The correct value is `m = 4`. This is an example rubric, not an automatic grading rule for every course.
+
+## Build applications on the preserved evidence
+
+### Assisted grading
+
+Use the structured question, student steps, formulas, and source locations to support assessment. Objective answers and multi-step reasoning need different evaluation criteria. Keep the grading rubric and review process explicit.
+
+### A personal mistake collection
+
+Store the question with its diagram, the student’s answer, the correct answer, and the diagnosed error. In the quadratic example, the record could carry topic labels for quadratic equations, discriminants, and sign errors, then link to three follow-up practice questions.
+
+Handwriting removal can support a clean practice copy, while the original record remains available for review.
+
+### A reusable question bank
+
+Store stems, options, formulas, figures, and answers as separate but linked elements. Coordinates help preserve the source relationship when the same question is later rendered in another format.
+
+### Learning analysis
+
+Map structured questions and assessed answers to knowledge points. Reliable analysis depends on the question and student work being correctly associated before the model interprets them.
+
+## Evaluate the complete pipeline
+
+Test digital PDFs, scanned papers, Word files, and photographed pages if they are part of the workload. Include dense formulas, diagrams, handwriting, skewed photos, and annotated answers. Inspect both the extracted content and its mapping back to the paper.
+
+A reported best-case example describes hundred-page processing in around 1.5 seconds. It does not establish the same timing for every exam, image quality, configuration, or deployment; benchmark representative inputs before setting throughput targets.
+
+A useful division of responsibility is clear: xParse structures document evidence, a model or rules engine evaluates it, and the learning application delivers results with an appropriate review process.
+
+<Card title="Explore xParse for structured documents" href="https://www.textin.ai/xparse">Preserve the information your downstream AI application needs.</Card>
+
+---
+
+## Keep exploring
+
+<Columns cols={2}>
+  <Card title="When a table crosses pages, context must follow" href="/news/20260813171405940">xParse · Journal</Card>
+  <Card title="Making every contract clause verifiable" href="/cases/20261016113656382">Customer story · xParse</Card>
+</Columns>
+
+<div className="article-return not-prose" role="navigation" aria-label="Article navigation"><a className="article-back" href="/news/list" data-content-back><span aria-hidden="true">←</span> Back to journal</a></div>
+
+<section className="resource-cta article-cta not-prose" aria-label="Contact TextIn">
+  <h2>Put document AI<br /><span className="cta-accent">to work.</span></h2>
+  <a className="site-button" href="https://www.textin.ai/contact">Talk to our team</a>
+</section>

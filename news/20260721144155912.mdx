@@ -1,0 +1,97 @@
+---
+title: From invoice capture to accounts payable automation
+description: Connect extraction, duplicate checks, three-way matching, and ERP posting in one reviewable workflow.
+sidebarTitle: From invoice capture to accounts payable automation
+keywords:
+- DocFlow
+- Guides
+- document intelligence
+mode: center
+hideFooterPagination: true
+timestamp: false
+date: '2026-07-21'
+product: DocFlow
+cover: /images/journal/invoices.webp
+source: https://www.textin.com/news/20260721144155912
+category: Guides
+og:image: /images/journal/invoices.webp
+---
+
+<div className="article-meta not-prose"><a className="article-back" href="/news/list" data-content-back><span aria-hidden="true">←</span> Back to journal</a><div><span>Guides</span><span>DocFlow</span><time dateTime="2026-07-21">2026-07-21</time></div></div>
+
+Month-end processing brings invoices from email, supplier portals, scanners, and phones. Some are digital PDFs; others contain blur, shadows, stamps, or handwriting. Finance teams still need to verify details and match them with the underlying purchase and receipt records.
+
+Useful accounts payable automation connects these stages. Recognizing text is only one part of the workflow.
+
+## 1. Capture and classify incoming documents
+
+Bring documents from the supported intake channels into a common processing queue. Classify the document type and check for duplicates early so that repeated submissions do not automatically become repeated payments.
+
+Email, messaging tools, portals, scanners, and mobile capture are possible channels in the source workflow. The connectors and controls available in a particular deployment need to be established during integration.
+
+## 2. Extract business fields
+
+An invoice workflow needs identifiers, dates, amounts, taxes, buyer and seller details, and line items. Layouts vary across suppliers and regions. Photographed invoices may include perspective distortion, shadows, moiré, or stamps, while Japanese and Korean documents introduce additional language and handwriting requirements.
+
+A multinational deployment evaluated more than 50 overseas invoice formats. That scope belongs to the deployment; validate your own format and language mix with actual samples.
+
+## 3. Verify authenticity and duplicates
+
+Duplicate detection can compare invoice identifiers with historical submissions. Exceptions should go to a review process with an audit trail.
+
+Tax verification is jurisdiction-specific. The source implementation includes a connection to China’s State Taxation Administration for eligible Chinese invoices. That does not establish equivalent tax-authority verification in another country. An overseas rollout needs to define the relevant local requirements and available integrations.
+
+## 4. Match invoice, purchase order, and goods receipt
+
+Three-way matching checks the invoice against the purchase order and receipt. Typical fields include supplier, material identifier, quantity, unit price, amount, and tax information where relevant.
+
+A clean comparison might show the same material, quantity, and price across all three records. Real exceptions include a quantity of `100.5` against an order for `100`, a different tax rate, a `0.01` rounding difference, or abbreviated supplier names.
+
+![Conceptual illustration of invoice, purchase order, and receipt matching](/images/journal/invoices.webp)
+
+*Conceptual workflow; field mappings and tolerances are configured for the business.*
+
+Define how each mismatch is handled. A rounding tolerance and a quantity discrepancy should not necessarily follow the same rule. Source coordinates help reviewers inspect the field in context instead of trusting an isolated value.
+
+The broader review process can include within-document consistency, cross-document comparison, contract checks, and business rules. Retain human ownership of exceptions and posting decisions.
+
+## 5. Return approved data to the ERP
+
+The article describes API and SDK integration with systems including SAP, Kingdee, and Yonyou, with SaaS and private deployment options. Each integration still needs document ownership, field mappings, error handling, and a clear approved-data return path.
+
+A workflow is complete when the business system receives the right data and unresolved exceptions remain visible—not merely when OCR produces an output.
+
+## A multinational supplier’s deployment
+
+A global automotive components supplier consolidated APAC invoice processing from Japan, Korea, India, and Thailand into a Shanghai finance shared services center. Japanese and Korean handwriting and differing formats had previously required specialist manual work.
+
+The team integrated the workflow with SAP through Tangro. Volumes were typically dozens of invoices daily, reaching around 100 at peak periods. Reported invoice handling time fell from approximately five minutes to 15 seconds, described in the case as more than 95% improvement.
+
+The deployment also reported an above-99% automated pass rate for eligible Chinese invoice tax checks. This metric applies to that local verification step, not to global invoice authenticity, extraction accuracy, or the entire AP workflow.
+
+## What to test in a proof of concept
+
+- **Coverage:** your invoice types, languages, suppliers, and capture channels.
+- **Difficult inputs:** handwritten fields, poor scans, stamps, and complex line-item layouts.
+- **Integration:** the route from intake through review to the ERP, including failed tasks.
+- **Controls:** duplicates, tax requirements, matching rules, tolerances, and evidence trails.
+
+Run the full sequence on your hardest representative samples. That reveals whether the solution supports the operational process rather than a successful recognition demo alone.
+
+<Card title="Explore DocFlow" href="https://www.textin.ai/en/docflow">Connect document processing to business workflows.</Card>
+
+---
+
+## Keep exploring
+
+<Columns cols={2}>
+  <Card title="Turn exam papers into structured learning data" href="/news/20260922154509747">xParse · Journal</Card>
+  <Card title="From two hours to ten minutes per document" href="/cases/20260731103033264">Customer story · DocFlow</Card>
+</Columns>
+
+<div className="article-return not-prose" role="navigation" aria-label="Article navigation"><a className="article-back" href="/news/list" data-content-back><span aria-hidden="true">←</span> Back to journal</a></div>
+
+<section className="resource-cta article-cta not-prose" aria-label="Contact TextIn">
+  <h2>Put document AI<br /><span className="cta-accent">to work.</span></h2>
+  <a className="site-button" href="https://www.textin.ai/contact">Talk to our team</a>
+</section>

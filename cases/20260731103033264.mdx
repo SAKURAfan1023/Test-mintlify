@@ -1,0 +1,101 @@
+---
+title: From two hours to ten minutes per document
+description: A global manufacturer builds a shared document processing layer for multilingual finance and trade operations.
+sidebarTitle: Global appliance manufacturer
+keywords:
+- DocFlow
+- Manufacturing
+- document intelligence
+mode: center
+hideFooterPagination: true
+timestamp: false
+date: '2026-08-04'
+product: DocFlow
+cover: /images/cases/20260731103033264/cover.webp
+source: https://www.textin.com/cases/20260731103033264
+industry: Manufacturing
+og:image: /images/cases/20260731103033264/cover.webp
+---
+
+<div className="article-meta not-prose"><a className="article-back" href="/cases/list" data-content-back><span aria-hidden="true">←</span> Back to customer stories</a><div><span>Manufacturing</span><span>DocFlow</span><time dateTime="2026-08-04">2026-08-04</time></div></div>
+
+![Global appliance manufacturer — source case cover](/images/cases/20260731103033264/cover.webp)
+
+
+
+## The customer
+
+A global appliance manufacturer operates across smart homes, industrial internet services, and healthcare. It has dozens of manufacturing and R&D locations and sells into more than 200 countries and regions. Its identity is not disclosed in the published case.
+
+## The challenge: global operations outgrew basic OCR
+
+The group’s electronic archive contained tens of millions of files: invoices, contracts, business vouchers, and international trade documents. Its existing OCR system had processed millions of documents, but more than 60% of core unstructured materials still required manual review and entry.
+
+Nested tables, tables spanning pages, and handwritten annotations exceeded the original system’s capabilities. Documents arrived in more than 20 languages, including Italian, French, German, and Polish. Contracts could run to 30–50 pages.
+
+The group handled approximately 40,000 documents a day in China and another 10,000 overseas. In the manual workflow described in the case, average handling time was about two hours per document, with annual labor costs of roughly CNY 5 million. OCR results were also disconnected from reimbursement, contract, and other business systems, leaving employees to verify and re-enter data.
+
+## The solution: a shared processing layer
+
+The group introduced INTSIG DocFlow through a private deployment. Standard APIs provide classification and extraction to business systems. Separate workspaces isolate each application’s document categories and data, while single sign-on and workspace-level permissions fit into the group’s identity controls.
+
+The published deployment reports 99.99% availability. This is a case-specific figure, not a general service-level commitment.
+
+### Handle multilingual and complex documents
+
+DocFlow processes nested tables, cross-page tables, and long contracts, extracting business fields across more than 20 languages in this implementation. Reported overall field extraction accuracy was approximately 85%, exceeding 90% in some more structured scenarios.
+
+### Connect through two integration paths
+
+1. **Through the image platform.** The image platform creates DocFlow tasks, displays results in a customized review interface, and sends approved JSON back to the business system after human correction.
+2. **Directly from a business application.** Systems without the image platform upload documents and retrieve structured results through DocFlow APIs to populate their forms.
+
+![Illustrated integration paths with human review](/images/diagrams/manufacturing.svg)
+
+## Results and projected savings
+
+Average processing time fell from about two hours to approximately ten minutes—roughly a 91.7% reduction in handling time. The review-and-return workflow reduced manual entry without removing the opportunity to correct results.
+
+The project projected a 40% reduction in annual labor costs, equivalent to around CNY 2 million against the reported CNY 5 million baseline. These are expected savings, not a claim that all savings had already been realized.
+
+The platform was progressively connected to expense reimbursement, overseas payment confirmation, tax, and financial audit systems. Its shared architecture gives additional applications an established integration path.
+
+## Implementation questions
+
+### Which documents were included?
+
+Purchase orders, overseas invoices, customs documents, 30–50-page contracts, and multilingual vouchers, including complex tables and handwritten annotations.
+
+### How were different languages handled?
+
+The implementation extracts the meaning of business fields such as dates, amounts, and document numbers across the supported language set. Language and document coverage should be evaluated with representative samples.
+
+### How did it connect to SAP and existing systems?
+
+The group used its image platform as an intermediary where available, including a review interface and JSON return path. Other systems called the standard API directly.
+
+### What was measured?
+
+The published case reports a reduction from two hours to ten minutes per document, approximately 85% overall field extraction accuracy, and above 90% in selected scenarios. The metrics measure different aspects of the workflow and should not be combined into a single accuracy or automation rate.
+
+### What were the deployment controls?
+
+Documents were processed in the private deployment with workspace separation, fine-grained access controls, and integration into the group’s single sign-on system.
+
+<p className="case-results-note">Results are reported in the original customer case. They reflect that implementation at publication and may differ in other environments.</p>
+
+---
+
+## Keep exploring
+
+<Columns cols={2}>
+  <Card title="A faster route through shipping documents" href="/cases/20260422104515242">DocFlow · Customer stories</Card>
+  <Card title="From long documents to retrieval-ready knowledge" href="/news/20260727145812209">Journal · xParse</Card>
+</Columns>
+
+<div className="article-return not-prose" role="navigation" aria-label="Article navigation"><a className="article-back" href="/cases/list" data-content-back><span aria-hidden="true">←</span> Back to customer stories</a></div>
+
+<section className="resource-cta article-cta not-prose" aria-label="Contact TextIn">
+  <h2>Put document AI<br /><span className="cta-accent">to work.</span></h2>
+  <a className="site-button" href="https://www.textin.ai/contact">Talk to our team</a>
+</section>

@@ -1,0 +1,86 @@
+---
+title: Making every contract clause verifiable
+description: How an AI contract platform connects extracted clauses to their source—even in scans and photographed documents.
+sidebarTitle: Zhishu Qifei
+keywords:
+- xParse
+- Software
+- document intelligence
+mode: center
+hideFooterPagination: true
+timestamp: false
+date: '2026-10-16'
+product: xParse
+cover: /images/cases/20261016113656382/cover.webp
+source: https://www.textin.com/cases/20261016113656382
+industry: Software
+og:image: /images/cases/20261016113656382/cover.webp
+---
+
+<div className="article-meta not-prose"><a className="article-back" href="/cases/list" data-content-back><span aria-hidden="true">←</span> Back to customer stories</a><div><span>Software</span><span>xParse</span><time dateTime="2026-10-16">2026-10-16</time></div></div>
+
+![Zhishu Qifei — source case cover](/images/cases/20261016113656382/cover.webp)
+
+
+
+## The customer
+
+<img src="/images/cases/20261016113656382/customer-logo.webp" alt="Zhishu Qifei customer logo" width="160" />
+
+Zhishu Qifei is an AI contract management software provider in the Feishu ecosystem. Its contract product supports drafting, review, approval, signing, performance tracking, and archiving. Customers work in manufacturing, consumer goods, new energy, media networks, and commercial aerospace.
+
+Its intelligent extraction feature identifies contract parties, amounts, payment terms, and liability clauses. To make those results useful to legal teams, each extracted field also needs evidence: the clause in the original document.
+
+## The challenge: a scan has no searchable text layer
+
+Customers upload digital PDFs and Word files alongside scans, phone photos, and faxes. A text-only OCR pipeline could recognize characters, but it could not reliably connect an extracted clause to its source location in an image-based PDF. Reviewers had to turn pages manually.
+
+Complex layouts made that harder. Multi-column pages, clauses spanning pages, merged table cells, stamps, and handwritten annotations could disrupt reading order or separate related content. Without page numbers and coordinates, legal reviewers could not quickly verify an AI-generated result.
+
+## The solution: structure with an evidence trail
+
+After several evaluation rounds, the team selected TextIn xParse as its parsing layer. The integration brings three capabilities into one workflow.
+
+### Parse different contract formats consistently
+
+The deployment handles PDFs, Word documents, scans, and photographed pages across more than ten file formats. It produces Markdown and structured JSON rather than disconnected OCR text. The published implementation also covers encrypted PDFs and selected fixed-layout formats; access and format requirements still need to be established for each integration.
+
+### Preserve layout and source coordinates
+
+Page references, block-level `position`, and character-level `char_pos` map parsed content back to the original document. The application can highlight a clause even when the source is a scanned PDF.
+
+Layout reconstruction preserves reading order, merged table cells, and content spanning pages. Image enhancement—including cropping, perspective correction, watermark removal, and clarity enhancement—helps the pipeline handle scanned and photographed inputs.
+
+![Illustrated contract review workflow: parse, extract, verify](/images/diagrams/contracts.svg)
+
+### Fit into the existing application
+
+The team integrated the cloud service through REST APIs. Markdown and JSON feed downstream language models for extraction and risk review. Components from the open-source `xparse-frontend` project support side-by-side source viewing, highlights, and navigation to the relevant coordinates.
+
+Parsing supplies document structure and location data. The contract application remains responsible for legal extraction, review decisions, and the user experience.
+
+## What changed
+
+- **Scans became verifiable.** Image-only contracts gained clause-level navigation and highlighting, extending the product to paper-heavy customer workflows.
+- **Review moved from page turning to direct navigation.** The published case describes source verification moving from minutes to seconds.
+- **The team reduced in-house parsing work.** It could build on layout and coordinate outputs instead of maintaining its own parsing models. The case also reports second-level parsing for hundred-page contracts in that deployment; actual processing time depends on the document and environment.
+
+These results describe this implementation, rather than a universal processing-time guarantee. The central product change is practical: reviewers can follow an extracted conclusion back to the evidence that supports it.
+
+<p className="case-results-note">Results are reported in the original customer case. They reflect that implementation at publication and may differ in other environments.</p>
+
+---
+
+## Keep exploring
+
+<Columns cols={2}>
+  <Card title="One document platform. Four banking workflows." href="/cases/20260915144322620">DocFlow · Customer stories</Card>
+  <Card title="From long documents to retrieval-ready knowledge" href="/news/20260727145812209">Journal · xParse</Card>
+</Columns>
+
+<div className="article-return not-prose" role="navigation" aria-label="Article navigation"><a className="article-back" href="/cases/list" data-content-back><span aria-hidden="true">←</span> Back to customer stories</a></div>
+
+<section className="resource-cta article-cta not-prose" aria-label="Contact TextIn">
+  <h2>Put document AI<br /><span className="cta-accent">to work.</span></h2>
+  <a className="site-button" href="https://www.textin.ai/contact">Talk to our team</a>
+</section>

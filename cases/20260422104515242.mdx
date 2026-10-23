@@ -1,0 +1,85 @@
+---
+title: A faster route through shipping documents
+description: A shipping company replaces brittle templates with document extraction connected to its existing operations system.
+sidebarTitle: Specialized shipping company
+keywords:
+- DocFlow
+- Logistics
+- document intelligence
+mode: center
+hideFooterPagination: true
+timestamp: false
+date: '2026-04-22'
+product: DocFlow
+cover: /images/cases/20260422104515242/cover.webp
+source: https://www.textin.com/cases/20260422104515242
+industry: Logistics
+og:image: /images/cases/20260422104515242/cover.webp
+---
+
+<div className="article-meta not-prose"><a className="article-back" href="/cases/list" data-content-back><span aria-hidden="true">←</span> Back to customer stories</a><div><span>Logistics</span><span>DocFlow</span><time dateTime="2026-04-22">2026-04-22</time></div></div>
+
+![Specialized shipping company — source case cover](/images/cases/20260422104515242/cover.webp)
+
+
+
+## The customer
+
+A specialized cargo carrier within a major Chinese shipping group transports heavy equipment, construction machinery, wind power equipment, pulp, vehicles, rail rolling stock, livestock, and refrigerated goods. The source case keeps the company anonymous.
+
+## The challenge: every agent sends a different layout
+
+Daily operations involve cargo manifests, bills of lading, and statements of facts (SOFs) in Word, PDF, Excel, scans, and images. Customers and agents use different layouts and field descriptions.
+
+The company’s in-house document system previously combined deep learning models with robotic process automation. Fixed-layout models required frequent retraining and rule changes. Staff still entered data and checked consistency across documents, while the company’s internal agent platform could produce unstable interpretations of complex paperwork.
+
+An SOF records events such as arrival, berthing, and loading or unloading. These times inform demurrage and despatch calculations. At one port, staff took an average of 39 minutes to process a two- or three-page SOF, including reading contract terms and manually organizing the information.
+
+## The solution: extraction inside the shipping workflow
+
+After a proof of concept, the company selected DocFlow as the processing engine behind its existing document system. The implementation supports different customer and agent layouts without a separate template for each one.
+
+### Extract the fields operations needs
+
+For bills of lading, the workflow extracts 14 categories of information, including shipper, consignee, notify party, vessel and voyage, ports, bill of lading number, quantity, weight, and volume.
+
+For SOFs, it extracts arrival, berthing, start-of-handling, and completion times. The business system uses these events in its laytime and charge calculations.
+
+### Connect documents to the full process
+
+The integration covers upload, parsing, field extraction, cross-document comparison, and workflow actions. It supports operations from booking and packing through customs declaration, loading, settlement, and clearance.
+
+![Illustrated shipping document workflow](/images/diagrams/shipping.svg)
+
+## What the two-port pilot showed
+
+| Measure | Published pilot result |
+| --- | --- |
+| Jobs processed | 493 |
+| Working time saved | 238.3 hours |
+| SOF handling time at one port | 39 minutes reduced to 5–10 minutes |
+| Field recognition on evaluated samples | 60–70% previously; above 90% with DocFlow |
+
+The source reports approximately 4–8× improvement for the SOF task and more than 10× improvement across the broader document process. These describe different scopes; the overall figure should not be presented as the timing result for every individual SOF.
+
+The team also reduced the engineering effort spent maintaining templates and rules. The practical change was a workflow that could accept varied documents, compare the extracted information, and return usable data to operations.
+
+The results come from a two-port pilot. A rollout to additional document types, ports, or languages should be validated against its own samples and business rules.
+
+<p className="case-results-note">Results are reported in the original customer case. They reflect that implementation at publication and may differ in other environments.</p>
+
+---
+
+## Keep exploring
+
+<Columns cols={2}>
+  <Card title="A stronger knowledge foundation for clinical AI" href="/cases/20260115154400225">xParse · Customer stories</Card>
+  <Card title="From long documents to retrieval-ready knowledge" href="/news/20260727145812209">Journal · xParse</Card>
+</Columns>
+
+<div className="article-return not-prose" role="navigation" aria-label="Article navigation"><a className="article-back" href="/cases/list" data-content-back><span aria-hidden="true">←</span> Back to customer stories</a></div>
+
+<section className="resource-cta article-cta not-prose" aria-label="Contact TextIn">
+  <h2>Put document AI<br /><span className="cta-accent">to work.</span></h2>
+  <a className="site-button" href="https://www.textin.ai/contact">Talk to our team</a>
+</section>

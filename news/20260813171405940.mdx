@@ -1,0 +1,94 @@
+---
+title: When a table crosses pages, context must follow
+description: Why joining table fragments takes more than matching columns—and how to evaluate the result.
+sidebarTitle: When a table crosses pages, context must follow
+keywords:
+- xParse
+- Engineering
+- document intelligence
+mode: center
+hideFooterPagination: true
+timestamp: false
+date: '2026-08-17'
+product: xParse
+cover: /images/journal/cross-page.webp
+source: https://www.textin.com/news/20260813171405940
+category: Engineering
+og:image: /images/journal/cross-page.webp
+---
+
+<div className="article-meta not-prose"><a className="article-back" href="/news/list" data-content-back><span aria-hidden="true">←</span> Back to journal</a><div><span>Engineering</span><span>xParse</span><time dateTime="2026-08-17">2026-08-17</time></div></div>
+
+A bank statement can look straightforward: account details at the top, transactions underneath, and the same headings on the next page. Yet a parser may treat each page as a new table. Downstream, one statement becomes several partial datasets, repeated headings become records, and totals lose their context.
+
+A cross-page table is one logical table rendered across two or more pages. The next page may repeat every header, repeat only part of it, or continue directly with data. The job is to recover the logical table while retaining the page-level evidence.
+
+## The difficult decision: continuation or a new table?
+
+Statements, annual reports, audit workpapers, contract schedules, engineering manuals, and test reports all contain tables that cross page boundaries. Similar columns alone do not prove that two fragments belong together. Two separate tables may use the same layout while describing different entities, periods, or units.
+
+A conservative parser leaves one logical table fragmented. An aggressive parser joins unrelated data. The second error can be harder to notice because the output appears complete.
+
+Useful continuation evidence includes the column layout, headings, units, captions, section context, and the content at the end and beginning of adjacent pages. Page headers and footers can help locate the boundary, but should not become table rows.
+
+## Headers carry meaning across the boundary
+
+A heading is part of the data model. Consider a multi-level header with **Revenue / Q1 / Q2** and **Cost / Q1 / Q2**. Keeping only the repeated “Q1” and “Q2” labels makes the values ambiguous.
+
+A useful result preserves the parent-child relationships, carries units and scale notes into continuation rows, and removes duplicate header rows without discarding their meaning. Where the next page has no header, it should inherit the right context from the preceding fragment.
+
+![Conceptual illustration of two page fragments becoming one logical table](/images/journal/cross-page.webp)
+
+
+
+Merged cells, subtotals, borderless tables, scan noise, and stamps can make the same task harder. Evaluation should include these combinations rather than only clean two-page examples.
+
+## What breaks downstream
+
+### Data pipelines
+
+Repeated headings can become duplicate records. Missing continuation rows change aggregates. Joining two unrelated tables can attach valid-looking values to the wrong reporting period or account.
+
+### Retrieval and question answering
+
+A retrieval system may find only one fragment of a table. If the heading or unit is stored elsewhere, the model has incomplete evidence even when it quotes the retrieved content correctly.
+
+### Audit and review
+
+A merged result needs a route back to the original page and location. Without that mapping, reviewers must search the entire document to check an extracted value.
+
+### Agent workflows
+
+An agent can calculate a total or trigger an alert from a table that is structurally wrong. Reasoning after extraction does not repair the missing or incorrectly joined evidence.
+
+## Three checks for a useful result
+
+1. **Logical grouping:** fragments of the same table are combined; tables with different meanings remain separate.
+2. **Context continuity:** multi-level headings, units, and scale notes apply to the correct rows, including pages without repeated headers.
+3. **Completeness and traceability:** row order, hierarchy, and values survive, and the data can be mapped to its source pages and locations.
+
+Check these independently. A visually attractive Markdown table is not enough if its rows belong to different contexts or cannot be traced back to the source.
+
+## Evaluate with your own documents
+
+Choose a statement or report that already causes difficulty. Compare the original page boundaries with the structured result. Check the first and last rows around every boundary, repeated headings, units, subtotals, and the ability to return to the original evidence.
+
+TextIn xParse provides table parsing and source-location information for document workflows. Use representative samples to establish whether its outputs meet your requirements before connecting them to a downstream system.
+
+<Card title="Explore xParse" href="https://www.textin.ai/xparse">Turn complex documents into structured data for AI and business systems.</Card>
+
+---
+
+## Keep exploring
+
+<Columns cols={2}>
+  <Card title="Parsing dense tables without losing a row" href="/news/20260731145844973">xParse · Journal</Card>
+  <Card title="Making every contract clause verifiable" href="/cases/20261016113656382">Customer story · xParse</Card>
+</Columns>
+
+<div className="article-return not-prose" role="navigation" aria-label="Article navigation"><a className="article-back" href="/news/list" data-content-back><span aria-hidden="true">←</span> Back to journal</a></div>
+
+<section className="resource-cta article-cta not-prose" aria-label="Contact TextIn">
+  <h2>Put document AI<br /><span className="cta-accent">to work.</span></h2>
+  <a className="site-button" href="https://www.textin.ai/contact">Talk to our team</a>
+</section>

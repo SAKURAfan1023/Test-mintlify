@@ -1,0 +1,79 @@
+---
+title: A stronger knowledge foundation for clinical AI
+description: A private healthcare group structures medical literature and records to support a clinical assistant and a million-scale
+  chunk index.
+sidebarTitle: Private healthcare group
+keywords:
+- xParse
+- Healthcare
+- document intelligence
+mode: center
+hideFooterPagination: true
+timestamp: false
+date: '2026-01-15'
+product: xParse
+cover: /images/cases/20260115154400225/cover.jpg
+source: https://www.textin.com/cases/20260115154400225
+industry: Healthcare
+og:image: /images/cases/20260115154400225/cover.jpg
+---
+
+<div className="article-meta not-prose"><a className="article-back" href="/cases/list" data-content-back><span aria-hidden="true">←</span> Back to customer stories</a><div><span>Healthcare</span><span>xParse</span><time dateTime="2026-01-15">2026-01-15</time></div></div>
+
+![Private healthcare group — source case cover](/images/cases/20260115154400225/cover.jpg)
+
+
+
+## The customer
+
+A leading private healthcare group in China provides comprehensive medical services with an international clinical team. The published case does not identify the group by name.
+
+The group wanted an assistant that could fit into doctors’ workflows: helping with information retrieval, treatment planning support, and medical record preparation. The foundation was a medical knowledge base built from research papers, clinical guidelines, reports, and records from outside hospitals.
+
+## The challenge: medical structure matters
+
+Traditional OCR struggled with medical formulas, special symbols, dense tables, and multi-level headings. Errors did more than affect readability: they increased specialist proofreading work and introduced low-quality material into the knowledge base.
+
+The team needed to preserve heading hierarchy and semantic structure while processing a large collection of heterogeneous documents. Poor parsing slowed the entire retrieval-augmented generation (RAG) project.
+
+## The solution: parse before building the knowledge layer
+
+The team evaluated character accuracy, heading reconstruction, and processing speed, then selected TextIn xParse as the parsing engine.
+
+xParse reconstructs headings, paragraphs, lists, formulas, and document structure so that downstream systems can use the content for retrieval, translation, and information extraction. Better structured inputs reduced repetitive proofreading and cleaning work.
+
+![Illustrated medical knowledge pipeline](/images/diagrams/healthcare.svg)
+
+The resulting data supported vectorization of a million-scale collection of knowledge chunks. This refers to indexed chunks, rather than a claim that the project processed millions of separate documents.
+
+## Connecting the knowledge base to clinical work
+
+The assistant was integrated into the group’s language-model client. Its functions included searching clinical information, supporting treatment-plan discussions, and answering questions using guidelines together with patient context. It also recognized, summarized, and ingested records from outside hospitals.
+
+Document parsing provides the structured information used by the application. The clinical assistant and medical team remain responsible for interpreting that information in the care workflow.
+
+## Reported outcomes and next steps
+
+The published case reports approximately 50% improvement in medical record processing efficiency and doctor adoption of 50–80% at the time of publication. It also describes faster preparation of the knowledge base, without publishing a separate numerical benchmark for that stage.
+
+The group planned to extend the approach to nursing, anesthesia, and imaging workflows, and to explore multilingual report translation. Those are planned extensions, rather than completed outcomes of the implementation described here.
+
+The case shows why a usable clinical knowledge base starts before retrieval: formulas, headings, tables, and source structure need to survive the transition from documents to data.
+
+<p className="case-results-note">Results are reported in the original customer case. They reflect that implementation at publication and may differ in other environments.</p>
+
+---
+
+## Keep exploring
+
+<Columns cols={2}>
+  <Card title="Making every contract clause verifiable" href="/cases/20261016113656382">xParse · Customer stories</Card>
+  <Card title="From long documents to retrieval-ready knowledge" href="/news/20260727145812209">Journal · xParse</Card>
+</Columns>
+
+<div className="article-return not-prose" role="navigation" aria-label="Article navigation"><a className="article-back" href="/cases/list" data-content-back><span aria-hidden="true">←</span> Back to customer stories</a></div>
+
+<section className="resource-cta article-cta not-prose" aria-label="Contact TextIn">
+  <h2>Put document AI<br /><span className="cta-accent">to work.</span></h2>
+  <a className="site-button" href="https://www.textin.ai/contact">Talk to our team</a>
+</section>

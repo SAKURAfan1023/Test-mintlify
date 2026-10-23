@@ -1,55 +1,34 @@
-# Mintlify Starter Kit
+# TextIn Resources
 
-Use the starter kit to get your docs deployed and ready to customize.
+TextIn customer stories and journal, built with Mintlify.
 
-Click the green **Use this template** button at the top of this repo to copy the Mintlify starter kit. The starter kit contains examples with
+## Local preview
 
-- Guide pages
-- Navigation
-- Customizations
-- API reference pages
-- Use of popular components
+Use Node.js 24 LTS:
 
-**[Follow the full quickstart guide](https://starter.mintlify.com/quickstart)**
-
-## AI-assisted writing
-
-Set up your AI coding tool to work with Mintlify:
-
-```bash
-npx skills add https://mintlify.com/docs
+```sh
+npx --yes mint@4.2.1096 dev --port 3001 --no-open
 ```
 
-This command installs Mintlify's documentation skill for your configured AI tools like Claude Code, Cursor, Windsurf, and others. The skill includes component reference, writing standards, and workflow guidance.
+Open [localhost:3001](http://localhost:3001).
 
-See the [AI tools guides](/ai-tools) for tool-specific setup.
+## Content maintenance
 
-## Development
+- `index.mdx`: resources homepage.
+- `cases/list.mdx` and `news/list.mdx`: list cards and default filters.
+- `cases/ID.mdx` and `news/ID.mdx`: article content, editable as MDX in the Mintlify console.
+- `docs.json`: navigation, logos, footer links and site settings.
+- `style.css` and `cases.js`: shared appearance and interactions.
+- `images/` and `fonts/`: website assets.
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview your documentation changes locally. To install, use the following command:
+Keep list cards and article titles, descriptions, dates and images synchronized. List filters read card attributes: `data-category`, `data-product`, `data-date` and, for customer stories, `data-scenarios`. Separate multiple scenarios with `|`, for example `Finance automation|Trade documentation`.
 
+When adding an article, add its list card and navigation entry in `docs.json`, then update related reading links.
+
+## Validation
+
+```sh
+npx --yes mint@4.2.1096 validate
+npx --yes mint@4.2.1096 broken-links
+node --check cases.js
 ```
-npm i -g mint
-```
-
-Run the following command at the root of your documentation, where your `docs.json` is located:
-
-```
-mint dev
-```
-
-View your local preview at `http://localhost:3000`.
-
-## Publishing changes
-
-Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app) to propagate changes from your repo to your deployment. Changes are deployed to production automatically after pushing to the default branch.
-
-## Need help?
-
-### Troubleshooting
-
-- If your dev environment isn't running: Run `mint update` to ensure you have the most recent version of the CLI.
-- If a page loads as a 404: Make sure you are running in a folder with a valid `docs.json`.
-
-### Resources
-- [Mintlify documentation](https://mintlify.com/docs)

@@ -5,3 +5,12 @@
 # Draft content
 drafts/
 *.draft.mdx
+
+maintenance/
+.mintlify/
+.env*
+*.pem
+*.key
+*.p12
+*.pfx
+*.log

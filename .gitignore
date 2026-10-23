@@ -1,0 +1,13 @@
+.DS_Store
+.mintlify/
+node_modules/
+.env*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.log
+
+# Local-only reports and screenshots
+maintenance/

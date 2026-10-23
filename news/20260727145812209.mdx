@@ -1,0 +1,113 @@
+---
+title: From long documents to retrieval-ready knowledge
+description: Build a structure-first ingestion pipeline that preserves headings, tables, media, and source evidence.
+sidebarTitle: From long documents to retrieval-ready knowledge
+keywords:
+- xParse
+- Guides
+- document intelligence
+mode: center
+hideFooterPagination: true
+timestamp: false
+date: '2026-07-28'
+product: xParse
+cover: /images/journal/knowledge.webp
+source: https://www.textin.com/news/20260727145812209
+category: Guides
+og:image: /images/journal/knowledge.webp
+---
+
+<div className="article-meta not-prose"><a className="article-back" href="/news/list" data-content-back><span aria-hidden="true">←</span> Back to journal</a><div><span>Guides</span><span>xParse</span><time dateTime="2026-07-28">2026-07-28</time></div></div>
+
+Standards, policies, and technical manuals are valuable knowledge assets. They are also difficult to ingest well. Scans, older PDFs, cross-page tables, scattered figures, and repeated headers complicate a task that is often described as simply “loading a PDF.”
+
+The goal is a data layer that can support retrieval, clause-level questions, and verifiable answers. Full-text OCR alone does not preserve the relationships those tasks need.
+
+The accompanying [open-source sample project](https://github.com/intsig-textin/xparse-sample-projects) demonstrates a long-document workflow using document parsing, heading-driven chunking, media extraction, and source mappings. Review its current setup and requirements before running it in your own environment.
+
+## Start with a stable intermediate representation
+
+A useful pipeline separates document understanding from deterministic post-processing:
+
+**Upload → parse → structured detail → outline → chunks and media → source mapping → knowledge index**
+
+Parsing supplies elements, their types, hierarchy, and positions. Post-processing uses those fields to build a consistent outline, attach captions, group content, and record evidence locations. Retrieval and language-model applications then build on that foundation.
+
+![Conceptual illustration of structured document ingestion](/images/journal/knowledge.webp)
+
+*Illustration of the architecture described in the source article.*
+
+Relevant structured fields include text, element type, `outline_level`, `page_id`, `sub_type`, `position`, and `image_url`. Their exact availability and semantics depend on the API response and configuration; inspect the response you actually receive.
+
+## Why plain text is insufficient
+
+Flattening a manual into one text stream loses the relationships between chapters, clauses, appendices, figures, and tables. Fixed-size splitting can produce chunks that are either too broad to retrieve precisely or too narrow to retain context.
+
+Repeated headers and footers can pollute retrieval. Tables and figures may be separated from their captions. A retrieved passage can also become difficult to verify when its page and location are missing.
+
+## Build chunks from document structure
+
+### Use one source of truth
+
+Generate the outline, text chunks, media records, and source mappings from the same structured `detail` output. Separate implementations that infer structure independently can disagree about where a section begins or which figure a caption describes.
+
+### Maintain a heading stack
+
+Traverse elements in reading order. When a heading appears, update the stack according to its hierarchy level. Preserve the heading as an identifiable unit, then associate subsequent content with that section path.
+
+A useful chunk can carry `title`, `path`, `page`, `text`, `type`, and `detailIndices`. The path gives a retrieved clause its parent context. The original element references provide a route back to the parsing result.
+
+### Give tables and figures their own identities
+
+Keep a table as a separate knowledge unit. Associate its caption with it rather than mixing its cells into unrelated prose. Extract figures as media records and retain their section path and caption.
+
+Caption association needs explicit rules. Adjacency can be helpful, but a nearby caption should not be assigned to the wrong image merely because it is the closest text block.
+
+### Keep paratext as an explicit choice
+
+Headers, footers, and page numbers may be noise for clause retrieval but useful for reconstruction or archiving. The source approach prepares both `chunks` and `chunks_with_paratext`, so downstream consumers can choose without repeating OCR.
+
+### Attach provenance before indexing
+
+Retain page references, section paths, source element indices, media relationships, and position mappings. A review interface should be able to answer “Which page?” and “Which clause?” from the indexed record.
+
+## Add length and retrieval strategies where needed
+
+| Strategy | Useful role | Tradeoff |
+| --- | --- | --- |
+| Heading-driven splitting | Establish the primary structure of standards and manuals | Depends on reliable heading reconstruction |
+| Recursive length splitting | Subdivide unusually long sections | Does not establish document hierarchy by itself |
+| Overlapping windows | Preserve context across selected boundaries | Expands the index and may create duplicate retrievals |
+| Semantic splitting | Group continuous topics in loosely formatted material | Supplements explicit structure rather than replacing it |
+| Parent-child retrieval | Retrieve a precise clause, then supply broader section context | Requires relationships between indexed units |
+
+For strongly structured documents, preserve hierarchy first. Choose additional splitting strategies based on actual retrieval failures rather than enabling all of them by default.
+
+## An implementation sequence
+
+1. Validate the structured parsing result against representative documents.
+2. Build heading-driven chunks and section paths.
+3. Extract tables, figures, and captions as complete knowledge units.
+4. Preserve page and position mappings through the ingestion process.
+5. Test retrieval, then add length limits, local overlap, or parent-child retrieval where evidence supports them.
+6. Build embedding, search, and language-model features on the validated data layer.
+
+The sample project is a starting point for this architecture, not proof that every file type or deployment condition is already covered. Test multi-column pages, handwriting, formula-heavy material, and cross-page content when those appear in your collection.
+
+<Card title="View the sample project" icon="github" href="https://github.com/intsig-textin/xparse-sample-projects">Explore the published long-document ingestion example.</Card>
+
+---
+
+## Keep exploring
+
+<Columns cols={2}>
+  <Card title="From invoice capture to accounts payable automation" href="/news/20260721144155912">DocFlow · Journal</Card>
+  <Card title="Making every contract clause verifiable" href="/cases/20261016113656382">Customer story · xParse</Card>
+</Columns>
+
+<div className="article-return not-prose" role="navigation" aria-label="Article navigation"><a className="article-back" href="/news/list" data-content-back><span aria-hidden="true">←</span> Back to journal</a></div>
+
+<section className="resource-cta article-cta not-prose" aria-label="Contact TextIn">
+  <h2>Put document AI<br /><span className="cta-accent">to work.</span></h2>
+  <a className="site-button" href="https://www.textin.ai/contact">Talk to our team</a>
+</section>
