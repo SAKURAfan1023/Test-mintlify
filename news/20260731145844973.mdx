@@ -3,21 +3,21 @@ title: Parsing dense tables without losing a row
 description: Small text, long identifiers, and large outputs can make an orderly table surprisingly difficult to parse.
 sidebarTitle: Parsing dense tables without losing a row
 keywords:
-- xParse
-- Engineering
-- document intelligence
+  - xParse
+  - Engineering
+  - document intelligence
 mode: center
 hideFooterPagination: true
 timestamp: false
-date: '2026-07-31'
-product: xParse
-cover: /images/journal/dense-tables.webp
 source: https://www.textin.com/news/20260731145844973
-category: Engineering
-og:image: /images/journal/dense-tables.webp
+og:image: https://intsig-2a639cbc.mintlify.site/images/journal/dense-tables.webp
 ---
 
-<div className="article-meta not-prose"><a className="article-back" href="/news/list" data-content-back><span aria-hidden="true">←</span> Back to journal</a><div><span>Engineering</span><span>xParse</span><time dateTime="2026-07-31">2026-07-31</time></div></div>
+{/* content:metadata:start */}
+[Back to journal](/news/list)
+
+Engineering · xParse · Jul 31, 2026
+{/* content:metadata:end */}
 
 A supplier directory may have perfectly regular columns and no merged cells. At a glance, the parsed result looks right. But deeper in the product-name column, a chemical name has changed by one character. Farther down, errors become more frequent.
 
@@ -83,14 +83,13 @@ The quality of a downstream data system starts with the values it receives. Dens
 
 ## Keep exploring
 
-<Columns cols={2}>
+<CardGroup cols={2}>
   <Card title="From long documents to retrieval-ready knowledge" href="/news/20260727145812209">xParse · Journal</Card>
   <Card title="Making every contract clause verifiable" href="/cases/20261016113656382">Customer story · xParse</Card>
-</Columns>
+</CardGroup>
 
-<div className="article-return not-prose" role="navigation" aria-label="Article navigation"><a className="article-back" href="/news/list" data-content-back><span aria-hidden="true">←</span> Back to journal</a></div>
+{/* content:footer:start */}
+[Back to journal](/news/list)
 
-<section className="resource-cta article-cta not-prose" aria-label="Contact TextIn">
-  <h2>Put document AI<br /><span className="cta-accent">to work.</span></h2>
-  <a className="site-button" href="https://www.textin.ai/contact">Talk to our team</a>
-</section>
+<Card title="Put document AI to work." href="https://www.textin.ai/contact" cta="Talk to our team" />
+{/* content:footer:end */}

@@ -1,0 +1,87 @@
+---
+title: "Faster document review for cross-border banking"
+description: "An internet bank brings trade documents, invoices, and contracts into a shared extraction workflow for international settlement and supply-chain finance."
+keywords:
+  - DocFlow
+  - trade documentation
+  - international settlement
+  - supply-chain finance
+source: "https://www.textin.com/cases/20260316170957067"
+mode: center
+hideFooterPagination: true
+timestamp: false
+sidebarTitle: Internet bank
+og:image: https://intsig-2a639cbc.mintlify.site/images/cases/20260316170957067/cover.webp
+---
+
+{/* content:metadata:start */}
+[Back to customer stories](/cases/list)
+
+Financial services · DocFlow · Mar 16, 2026
+{/* content:metadata:end */}
+
+![Internet bank — original case cover](/images/cases/20260316170957067/cover.webp)
+
+## The customer
+
+A major internet bank in China provides inclusive and supply-chain finance services. Following approval to offer foreign exchange services, it needed document review capabilities for a growing international business. Its existing bill-financing operations also needed a stronger document processing foundation. The source does not name the bank.
+
+## The challenge: new services, familiar manual bottlenecks
+
+International settlement involves contracts, commercial invoices, bills of lading, letters of credit, certificates of origin, and other documents with widely varying formats. Important fields can be spread across different pages and files.
+
+Manual review typically took more than ten minutes per transaction. The previous OCR solution struggled with mixed tables, multilingual content, and special symbols, leaving reviewers to correct or re-enter substantial amounts of data.
+
+Supply-chain finance introduced a related requirement: compare trade contracts and invoices to help assess whether the underlying trade was consistent. The bank needed a reliable service quickly, with enough capacity to support peak workloads.
+
+![Trade document categories illustrated in the original case](/images/cases/20260316170957067/figure-1.webp)
+
+## The solution: document extraction inside the bank's review systems
+
+The bank selected INTSIG DocFlow to support both international business and supply-chain finance.
+
+### Extract information from international trade documents
+
+The implementation covers more than 15 common document types. It extracts dozens of fields, including importer and exporter details, trade terms, and goods line items, and supplies structured inputs to the foreign exchange review workflow.
+
+![International trade information extracted in the original DocFlow interface](/images/cases/20260316170957067/figure-2.webp)
+
+### Compare evidence across documents
+
+For bill financing, DocFlow replaced the earlier recognition product. It extracts more than 20 key fields from contracts and invoices, such as amounts, dates, goods descriptions, and model numbers.
+
+Cross-document consistency checks help reviewers assess the trade evidence and reduce repetitive manual verification. The bank retains responsibility for the review decision.
+
+![A commercial invoice and its extracted fields from the original case](/images/cases/20260316170957067/figure-3.webp)
+
+### Return structured data to existing applications
+
+The service connects to the bank's document review and credit approval systems. Documents are uploaded, fields are extracted, and structured results flow back to the business applications, supporting both lines of business without a separate manual data-entry stage.
+
+## Reported results
+
+| Workflow | Published result |
+| --- | --- |
+| Supply-chain finance contract and invoice extraction | 93% key-field recognition accuracy |
+| Supply-chain finance review | Approximately two minutes per transaction; reported efficiency improvement of more than fourfold |
+| International settlement review in the reported validation | Approximately 2.5 minutes per transaction; reported efficiency improvement of about fivefold |
+| Transactions processed at publication | Several hundred |
+
+The source describes same-day rather than next-day handling during peak periods as an expected benefit of the international settlement workflow. It also notes that simpler items could be handled on the same day. These expectations should be distinguished from the measured review times above.
+
+The shared extraction layer gives the bank a consistent way to introduce new cross-border documents while upgrading its existing trade review process.
+
+*Results are reported in the original customer case and reflect that implementation and validation at publication.*
+
+## Keep exploring
+
+<CardGroup cols={2}>
+  <Card title="One document platform. Four banking workflows." href="/cases/20260915144322620">DocFlow · Banking</Card>
+  <Card title="A faster route through shipping documents" href="/cases/20260422104515242">DocFlow · Trade documentation</Card>
+</CardGroup>
+
+{/* content:footer:start */}
+[Back to customer stories](/cases/list)
+
+<Card title="Put document AI to work." href="https://www.textin.ai/contact" cta="Talk to our team" />
+{/* content:footer:end */}

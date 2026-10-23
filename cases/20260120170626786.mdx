@@ -1,0 +1,104 @@
+---
+title: "A document foundation for 400+ financial AI workflows"
+description: "A major securities firm combines xParse for complex financial documents with DocFlow for expense automation."
+keywords:
+  - xParse
+  - DocFlow
+  - financial services
+  - enterprise AI
+  - expense automation
+source: "https://www.textin.com/cases/20260120170626786"
+mode: center
+hideFooterPagination: true
+timestamp: false
+sidebarTitle: Securities firm
+og:image: https://intsig-2a639cbc.mintlify.site/images/cases/20260120170626786/cover.webp
+---
+
+{/* content:metadata:start */}
+[Back to customer stories](/cases/list)
+
+Financial services · xParse & DocFlow · Jan 20, 2026
+{/* content:metadata:end */}
+
+![Securities firm — original case cover](/images/cases/20260120170626786/cover.webp)
+
+## The customer
+
+A major full-service investment bank in China operates across securities, funds, futures, and direct investment. The published case describes it as a top-five domestic institution without disclosing its name.
+
+As international operations expanded, the firm was building a shared AI platform for digital employees, agents, and retrieval-augmented generation. At the same time, its financial shared services center wanted to automate expense processing.
+
+## The challenge: financial documents require structure and control
+
+The AI platform had to handle fund confirmation letters, complex domestic and overseas company announcements, and investment product documents. Tables, multi-level headings, and special layouts carried relationships that a plain text pipeline could lose.
+
+Manual analysis did not scale. One deep announcement analysis task could occupy three people for 15–20 working days. The firm needed more timely structured inputs while keeping sensitive financial data within its own environment.
+
+Expense processing created a separate bottleneck. Domestic and international travel invoices, business purchase receipts, and other supporting documents arrived in inconsistent formats, often blurred, folded, or skewed. Manual entry and review slowed reimbursement and increased operating costs.
+
+## The solution: two document services, integrated with existing systems
+
+### xParse for the enterprise AI platform
+
+The firm selected xParse following proof-of-concept comparisons of complex financial document parsing. The deployment reconstructs tables, heading hierarchies, and layout relationships so downstream applications can work with structured content.
+
+![A listed company's announcement and its parsed structure in the original case](/images/cases/20260120170626786/figure-1.webp)
+
+xParse runs as a reusable service within the firm's private AI environment, replacing an earlier interim solution. Internal departments can use the same parsing capability for extraction, research, agents, and knowledge applications.
+
+The source describes very strict accuracy requirements and strong results in the firm's evaluation. Those statements describe its requirements and test context; they do not establish a universal zero-error guarantee.
+
+### DocFlow for expense review
+
+The financial shared services workflow uses DocFlow to classify receipts and extract amounts, dates, item names, tax identifiers, and other required fields. The deployment is designed for difficult images as well as standard invoices.
+
+From an employee's mobile submission, structured data flows into preliminary compliance checks and the financial system's review and payment process. The firm's own systems retain control of the financial workflow.
+
+![A railway e-ticket and extracted expense fields in the original case](/images/cases/20260120170626786/figure-2.webp)
+
+## Reported results
+
+| Area | Published result |
+| --- | --- |
+| Announcement analysis and fund information entry | Overall processing efficiency improved by more than 80% |
+| AI platform adoption | More than 400 automation workflows and applications supported at publication |
+| Expense processing | Wider automation coverage for difficult receipts and less manual intervention |
+| Financial operations | Shorter review cycles and an improved reimbursement experience, without a published numerical reduction |
+
+The two services serve different parts of the operating model: xParse supplies structured document data to the AI platform, while DocFlow supports execution inside the expense process.
+
+*Results are reported in the original customer case and reflect that implementation at publication.*
+
+## Questions from the implementation
+
+<AccordionGroup>
+  <Accordion title="How did the firm address accuracy requirements?">
+    The team evaluated xParse against complex tables, multi-level headings, and financial layouts in its own proof of concept. Structured outputs retain document relationships for downstream verification. The source reports strong comparative performance; it does not supply evidence for error-free processing of every future document.
+  </Accordion>
+  <Accordion title="Which difficult receipts enter the expense workflow?">
+    The deployment covers blurred, folded, and skewed domestic and international invoices, alongside business purchase receipts with varied layouts. DocFlow classifies the documents and extracts fields such as amounts, dates, item names, and tax identifiers.
+  </Accordion>
+  <Accordion title="What improvements were quantified?">
+    The firm reported more than 80% overall processing efficiency improvement in announcement analysis and fund information entry. It also reported support for more than 400 AI workflows and applications. Reimbursement benefits were described qualitatively rather than as a separate percentage.
+  </Accordion>
+  <Accordion title="How were deployment and data requirements handled?">
+    The source describes private deployment, support for the customer's domestic technology compatibility requirements, and processing of sensitive financial data inside the firm's environment. These are details of this implementation rather than a blanket compliance certification.
+  </Accordion>
+  <Accordion title="How do the services connect to the existing platform?">
+    Parsing is exposed as a standard API or service component within the AI platform. DocFlow is integrated into financial shared services, connecting submission, classification, extraction, and preliminary review with the firm's existing systems.
+  </Accordion>
+</AccordionGroup>
+
+## Keep exploring
+
+<CardGroup cols={2}>
+  <Card title="From financial reports to same-day research data" href="/cases/20260330181528169">xParse · Financial research</Card>
+  <Card title="From 50% to 70% automated expense review" href="/cases/20260709164632354">DocFlow · Financial shared services</Card>
+</CardGroup>
+
+{/* content:footer:start */}
+[Back to customer stories](/cases/list)
+
+<Card title="Put document AI to work." href="https://www.textin.ai/contact" cta="Talk to our team" />
+{/* content:footer:end */}

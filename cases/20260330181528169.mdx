@@ -1,0 +1,88 @@
+---
+title: "From financial reports to same-day research data"
+description: "DealingMatrix uses xParse to preserve report structure, connect charts with context, and process more than 500 reports a week."
+keywords:
+  - xParse
+  - DealingMatrix
+  - financial research
+  - cross-page tables
+  - RAG
+source: "https://www.textin.com/cases/20260330181528169"
+mode: center
+hideFooterPagination: true
+timestamp: false
+sidebarTitle: DealingMatrix
+og:image: https://intsig-2a639cbc.mintlify.site/images/cases/20260330181528169/cover.webp
+---
+
+{/* content:metadata:start */}
+[Back to customer stories](/cases/list)
+
+Financial services · xParse · Mar 30, 2026
+{/* content:metadata:end */}
+
+![DealingMatrix — original case cover](/images/cases/20260330181528169/cover.webp)
+
+## The customer
+
+![DealingMatrix customer logo](/images/cases/20260330181528169/customer-logo.webp)
+
+DealingMatrix, known as DM and operated by Shanghai Huanqing Information Technology, provides financial data and technology services to institutional investors. Its platforms bring together bond quotes, institutional information, ratings, market news, and credit fundamentals for fixed-income research.
+
+The published case reports coverage of more than 90% of securities firms, 95% of public fund managers, and 75% of banks in its domestic market, serving more than 10,000 financial institutions at that time.
+
+## The challenge: research data production depended on manual rules
+
+DM collects, organizes, and analyzes fixed-income and credit-market documents, then delivers the resulting data through its terminal products.
+
+Financial statement notes, research reports, offshore bond documents, and complex charts were stretching a production process built around manual work and regular expressions. Layout changes required frequent rule maintenance. During busy periods, additional staff were needed to maintain accuracy and turnaround times.
+
+The existing approach also struggled to merge tables across pages, preserve document hierarchies, and connect a chart with its title and surrounding context. New report-analysis products increased the need for a more scalable pipeline.
+
+## The solution: structure that downstream products can use
+
+After several evaluation rounds, DM selected TextIn xParse as its core document parsing engine.
+
+### Parse reports without losing context
+
+The service handles annual reports, financial statements, research reports, notes, and charts in Chinese, English, and multilingual documents.
+
+It retains heading hierarchies for navigation, associates charts with their titles, and reconstructs tables spanning multiple pages. The implementation included further optimization of cross-page table merging to improve stability.
+
+![A chart and its structured output in the original parsing interface](/images/cases/20260330181528169/figure-1.webp)
+
+![A multi-page financial table reconstructed in the original case](/images/cases/20260330181528169/figure-2.webp)
+
+### Connect to the existing data production stack
+
+Original documents and parsed JSON are stored in object storage. HTTP interfaces make results available to business applications. The service also works with the team's n8n and Coze-based data workflows.
+
+Standardized outputs can be used by data engineers, product teams, and algorithm teams. The parsing layer supplies structure and source references; the customer's systems continue to perform downstream analysis and presentation.
+
+## Reported results
+
+| Measure | Published result |
+| --- | --- |
+| Workflow coverage for complex documents such as financial statement notes | 90% |
+| Processing efficiency compared with manual work | Improved by 70–80% |
+| Sustained report volume | More than 500 reports per week |
+| Turnaround for newly released reports | Same-day output in the reported workflow |
+
+Tasks that previously occupied several people now run through automated workflows, reducing routine rule maintenance. The resulting report structure supports RAG navigation, viewpoint summaries, chart associations, and links back to source material.
+
+For DM, the change is a more reliable data production layer that can support additional research products without expanding manual processing at the same rate.
+
+*Results are reported in the original customer case and reflect that implementation at publication.*
+
+## Keep exploring
+
+<CardGroup cols={2}>
+  <Card title="A document foundation for 400+ financial AI workflows" href="/cases/20260120170626786">xParse &amp; DocFlow · Financial services</Card>
+  <Card title="Making every contract clause verifiable" href="/cases/20261016113656382">xParse · Source verification</Card>
+</CardGroup>
+
+{/* content:footer:start */}
+[Back to customer stories](/cases/list)
+
+<Card title="Put document AI to work." href="https://www.textin.ai/contact" cta="Talk to our team" />
+{/* content:footer:end */}

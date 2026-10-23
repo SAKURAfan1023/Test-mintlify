@@ -1,0 +1,75 @@
+name: Content publishing
+
+on:
+  push:
+    paths:
+      - 'content/**'
+      - 'news/**'
+      - 'cases/**'
+      - 'images/**'
+      - 'templates/**'
+      - 'scripts/**'
+      - 'package*.json'
+      - 'docs.json'
+      - '.github/workflows/content.yml'
+  pull_request:
+    paths:
+      - 'content/**'
+      - 'news/**'
+      - 'cases/**'
+      - 'images/**'
+      - 'templates/**'
+      - 'scripts/**'
+      - 'package*.json'
+      - 'docs.json'
+      - '.github/workflows/content.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: content-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm test
+      - run: node --check cases.js
+      - run: npm run content:build
+      - run: npx --yes mint@4.2.1096 validate
+      - run: npx --yes mint@4.2.1096 broken-links
+
+  generate:
+    if: github.event_name != 'pull_request'
+    needs: validate
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run content:build
+      - name: Commit generated pages
+        run: |
+          git add -A -- index.mdx docs.json news/ cases/
+          if git diff --cached --quiet; then
+            echo "Generated pages are already current."
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'content: synchronize catalog and pages'
+          git push

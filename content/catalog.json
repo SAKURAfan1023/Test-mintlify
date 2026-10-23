@@ -1,0 +1,298 @@
+{
+  "$schema": "./catalog.schema.json",
+  "siteUrl": "https://intsig-2a639cbc.mintlify.site",
+  "news": [
+    {
+      "page": "news/20260813171405940",
+      "date": "2026-08-17",
+      "category": "Engineering",
+      "product": "xParse",
+      "cover": "/images/journal/cross-page.webp",
+      "readMinutes": 4,
+      "featured": true
+    },
+    {
+      "page": "news/20260731145844973",
+      "date": "2026-07-31",
+      "category": "Engineering",
+      "product": "xParse",
+      "cover": "/images/journal/dense-tables.webp",
+      "readMinutes": 4
+    },
+    {
+      "page": "news/20260727145812209",
+      "date": "2026-07-28",
+      "category": "Guides",
+      "product": "xParse",
+      "cover": "/images/journal/knowledge.webp",
+      "readMinutes": 5
+    },
+    {
+      "page": "news/20260721144155912",
+      "date": "2026-07-21",
+      "category": "Guides",
+      "product": "DocFlow",
+      "cover": "/images/journal/invoices.webp",
+      "readMinutes": 4
+    },
+    {
+      "page": "news/20260922154509747",
+      "date": "2026-09-29",
+      "category": "Guides",
+      "product": "xParse",
+      "cover": "/images/journal/education.webp",
+      "readMinutes": 4
+    }
+  ],
+  "cases": [
+    {
+      "page": "cases/20261016113656382",
+      "date": "2026-10-16",
+      "industry": "Software",
+      "product": "xParse",
+      "cover": "/images/cases/20261016113656382/cover.webp",
+      "scenarios": [
+        "Contract analysis"
+      ],
+      "customer": "Zhishu Qifei",
+      "customerLogo": "/images/cases/20261016113656382/customer-logo.webp",
+      "metric": {
+        "value": "Seconds",
+        "label": "to locate source clauses"
+      },
+      "featured": true
+    },
+    {
+      "page": "cases/20260915144322620",
+      "date": "2026-09-16",
+      "industry": "Financial services",
+      "product": "DocFlow",
+      "cover": "/images/cases/20260915144322620/cover.jpg",
+      "scenarios": [
+        "Finance automation",
+        "Trade documentation"
+      ],
+      "customer": "Regional commercial bank",
+      "metric": {
+        "value": "60%",
+        "label": "reported improvement in voucher entry"
+      }
+    },
+    {
+      "page": "cases/20260731103033264",
+      "date": "2026-08-04",
+      "industry": "Manufacturing",
+      "product": "DocFlow",
+      "cover": "/images/cases/20260731103033264/cover.webp",
+      "scenarios": [
+        "Finance automation",
+        "Trade documentation"
+      ],
+      "customer": "Global appliance manufacturer",
+      "metric": {
+        "value": "90%+",
+        "label": "less processing time per document"
+      }
+    },
+    {
+      "page": "cases/20260709164632354",
+      "date": "2026-07-10",
+      "industry": "Manufacturing",
+      "product": "DocFlow",
+      "cover": "/images/cases/20260709164632354/cover.webp",
+      "scenarios": [
+        "Expense automation",
+        "Finance automation"
+      ],
+      "customer": "Global technology manufacturer",
+      "metric": {
+        "value": "70%",
+        "label": "automated expense review pass rate"
+      }
+    },
+    {
+      "page": "cases/20260525114724940",
+      "date": "2026-05-25",
+      "industry": "Manufacturing",
+      "product": "xParse",
+      "cover": "/images/cases/20260525114724940/cover.webp",
+      "scenarios": [
+        "Enterprise AI",
+        "Document extraction",
+        "Knowledge management"
+      ],
+      "customer": "Global AIoT manufacturer",
+      "metric": {
+        "value": "20+",
+        "label": "connected business systems"
+      }
+    },
+    {
+      "page": "cases/20260515161812188",
+      "date": "2026-05-15",
+      "industry": "Manufacturing",
+      "product": "xParse",
+      "cover": "/images/cases/20260515161812188/cover.webp",
+      "scenarios": [
+        "Knowledge management",
+        "Contract analysis",
+        "Finance automation"
+      ],
+      "customer": "Heavy equipment manufacturer",
+      "metric": {
+        "value": "70%",
+        "label": "improvement in management report analysis"
+      }
+    },
+    {
+      "page": "cases/20260422104515242",
+      "date": "2026-04-22",
+      "industry": "Logistics",
+      "product": "DocFlow",
+      "cover": "/images/cases/20260422104515242/cover.webp",
+      "scenarios": [
+        "Trade documentation"
+      ],
+      "customer": "Specialized shipping company",
+      "metric": {
+        "value": "238.3 h",
+        "label": "saved across 493 pilot jobs"
+      }
+    },
+    {
+      "page": "cases/20260330181528169",
+      "date": "2026-03-30",
+      "industry": "Financial services",
+      "product": "xParse",
+      "cover": "/images/cases/20260330181528169/cover.webp",
+      "scenarios": [
+        "Financial research",
+        "Knowledge management"
+      ],
+      "customer": "DealingMatrix",
+      "metric": {
+        "value": "70–80%",
+        "label": "reported processing efficiency improvement"
+      },
+      "customerLogo": "/images/cases/20260330181528169/customer-logo.webp"
+    },
+    {
+      "page": "cases/20260316170957067",
+      "date": "2026-03-16",
+      "industry": "Financial services",
+      "product": "DocFlow",
+      "cover": "/images/cases/20260316170957067/cover.webp",
+      "scenarios": [
+        "Trade documentation",
+        "Credit review"
+      ],
+      "customer": "Internet bank",
+      "metric": {
+        "value": "2.5 min",
+        "label": "per settlement review in validation"
+      }
+    },
+    {
+      "page": "cases/20260209172616177",
+      "date": "2026-02-09",
+      "industry": "Financial services",
+      "product": "DocFlow",
+      "cover": "/images/cases/20260209172616177/cover.webp",
+      "scenarios": [
+        "Credit review",
+        "Document extraction"
+      ],
+      "customer": "Automotive finance company",
+      "metric": {
+        "value": "27",
+        "label": "document categories on one platform"
+      }
+    },
+    {
+      "page": "cases/20260120170626786",
+      "date": "2026-01-20",
+      "industry": "Financial services",
+      "product": [
+        "xParse",
+        "DocFlow"
+      ],
+      "cover": "/images/cases/20260120170626786/cover.webp",
+      "scenarios": [
+        "Enterprise AI",
+        "Financial research",
+        "Expense automation",
+        "Knowledge management"
+      ],
+      "customer": "Securities firm",
+      "metric": {
+        "value": "400+",
+        "label": "AI workflows and applications supported"
+      }
+    },
+    {
+      "page": "cases/20260120144502796",
+      "date": "2026-01-20",
+      "industry": "Financial services",
+      "product": "DocFlow",
+      "cover": "/images/cases/20260120144502796/cover.webp",
+      "scenarios": [
+        "Contract analysis",
+        "Credit review"
+      ],
+      "customer": "SPDB Financial Leasing",
+      "metric": {
+        "value": "1.45M+",
+        "label": "cumulative system calls at publication"
+      },
+      "customerLogo": "/images/cases/20260120144502796/customer-logo.webp"
+    },
+    {
+      "page": "cases/20260115154400225",
+      "date": "2026-01-15",
+      "industry": "Healthcare",
+      "product": "xParse",
+      "cover": "/images/cases/20260115154400225/cover.jpg",
+      "scenarios": [
+        "Knowledge management"
+      ],
+      "customer": "Private healthcare group",
+      "metric": {
+        "value": "50%",
+        "label": "reported improvement in record processing"
+      }
+    },
+    {
+      "page": "cases/20260115115348705",
+      "date": "2026-01-15",
+      "industry": "Education",
+      "product": "xParse",
+      "cover": "/images/cases/20260115115348705/cover.webp",
+      "scenarios": [
+        "Education digitization",
+        "Knowledge management"
+      ],
+      "customer": "Education publishing group",
+      "metric": {
+        "value": "~8×",
+        "label": "reported workflow efficiency improvement"
+      }
+    },
+    {
+      "page": "cases/20260109165413680",
+      "date": "2026-01-09",
+      "industry": "Automotive",
+      "product": "DocFlow",
+      "cover": "/images/cases/20260109165413680/cover.webp",
+      "scenarios": [
+        "Accounts payable",
+        "Finance automation"
+      ],
+      "customer": "Webasto",
+      "metric": {
+        "value": "15 sec",
+        "label": "average supplier invoice processing time"
+      },
+      "customerLogo": "/images/cases/20260109165413680/customer-logo.webp"
+    }
+  ]
+}

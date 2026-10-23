@@ -1,0 +1,88 @@
+---
+title: "From printed questions to structured learning content"
+description: "An education publishing group uses xParse to preserve formulas and question structure while accelerating its content digitization workflow."
+keywords:
+  - xParse
+  - education
+  - question bank digitization
+  - LaTeX
+  - formula recognition
+source: "https://www.textin.com/cases/20260115115348705"
+mode: center
+hideFooterPagination: true
+timestamp: false
+sidebarTitle: Education publishing group
+og:image: https://intsig-2a639cbc.mintlify.site/images/cases/20260115115348705/cover.webp
+---
+
+{/* content:metadata:start */}
+[Back to customer stories](/cases/list)
+
+Education · xParse · Jan 15, 2026
+{/* content:metadata:end */}
+
+![Education publishing group — original case cover](/images/cases/20260115115348705/cover.webp)
+
+## The customer
+
+An education publishing and technology group in China provides question banks, digital textbooks, and online assessments for schools, higher education, and vocational training. It serves hundreds of educational institutions. The source does not name the group.
+
+Its data product team prepares structured question content for intelligent question banks, automated grading, and other learning applications.
+
+## The challenge: recognition errors slowed the entire content pipeline
+
+The team's annotation platform needed to split questions, recognize text, and extract formulas from large collections of documents and images. The previous OCR pipeline frequently produced corrupted mathematical notation or lost formula structure, particularly in mathematics and physics materials.
+
+Inconsistent output required staff to check and correct questions individually. One person could process only about 50 complex questions per day, slowing question bank launches and updates.
+
+Batch processing created another constraint: the existing service lacked the throughput and stability required for large volumes of question images.
+
+![The original case's example of a mathematics question processed with traditional OCR](/images/cases/20260115115348705/figure-1.webp)
+
+![Structured document parsing output for educational content from the original case](/images/cases/20260115115348705/figure-2.webp)
+
+## The solution: parse questions into editable, structured content
+
+Following several rounds of testing, the data team selected TextIn xParse and connected it to its existing annotation pipeline.
+
+### Preserve formulas, tables, and layout
+
+The implementation uses recognition optimized for educational content, including formulas, tables, and handwriting. Formulas are returned as editable LaTeX so downstream systems can work with their structure rather than a flattened image.
+
+Image preparation includes automatic cropping and perspective correction, handwriting removal where appropriate, and layout reconstruction. These capabilities help normalize photographed and scanned materials before they enter the question bank.
+
+![A photographed question after correction and recognition in the original case](/images/cases/20260115115348705/figure-3.webp)
+
+### Support the production pipeline at scale
+
+Concurrent processing and batch parsing support large question collections. APIs and technical support helped the team connect the service to its existing data annotation process and reduce integration and debugging work.
+
+Structured output replaces much of the manual pre-cleaning and correction that previously preceded annotation.
+
+## Reported results
+
+| Measure | Published result |
+| --- | --- |
+| Recognition of complex elements such as formulas, tables, and handwriting | More than 99% in the reported evaluation |
+| Daily question processing | Increased from dozens of manually handled questions to hundreds |
+| Overall workflow efficiency | Improved by nearly eightfold |
+| Question bank update cycle | Shortened from months to weeks |
+
+The source reports that most recognized questions could enter the question bank without a second manual correction pass. That reduced routine proofreading work and allowed the data team to focus on annotation rules, quality control, and learning platform development.
+
+The parsing service supplies structured educational content; downstream applications remain responsible for grading logic, learning analysis, and the student experience.
+
+*Results are reported in the original customer case and reflect its evaluation and workflow at publication.*
+
+## Keep exploring
+
+<CardGroup cols={2}>
+  <Card title="A stronger knowledge foundation for clinical AI" href="/cases/20260115154400225">xParse · Knowledge management</Card>
+  <Card title="One parsing platform for more than 20 business systems" href="/cases/20260525114724940">xParse · Enterprise AI</Card>
+</CardGroup>
+
+{/* content:footer:start */}
+[Back to customer stories](/cases/list)
+
+<Card title="Put document AI to work." href="https://www.textin.ai/contact" cta="Talk to our team" />
+{/* content:footer:end */}

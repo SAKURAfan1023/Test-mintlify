@@ -1,0 +1,31 @@
+---
+title: "Customer stories"
+description: "See how teams turn complex documents into business results with TextIn xParse and INTSIG DocFlow."
+keywords:
+  - TextIn
+  - Customer stories
+  - document intelligence
+  - xParse
+  - DocFlow
+mode: custom
+hideFooterPagination: true
+---
+
+<div className="resources-site stories-page not-prose">
+<section className="collection-hero"><div className="site-shell"><h1>Customer <span>stories.</span></h1><p>How teams put document intelligence to work.</p></div></section>
+<div className="site-shell collection-body">
+<section id="catalog" data-content-catalog data-kind="cases" data-filter-key="industry" data-default-category="" data-default-scenario="" data-default-product="" data-default-sort="recommended" data-page-size="{{PAGE_SIZE}}" data-initial-page="{{PAGE}}" data-catalog-index="{{INDEX}}">
+<div className="catalog-toolbar"><div className="category-filters" role="group" aria-label="Filter by industry" data-category-filters><button type="button" data-category-filter="" aria-pressed="true">All industries</button></div><label className="catalog-search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><input type="search" data-content-search placeholder="Search stories" aria-label="Search stories" /></label></div>
+<div className="catalog-options"><p data-result-count aria-live="polite" role="status">{{COUNT}} stories</p><div><select data-scenario-filter aria-label="Filter by use case"><option value="">All use cases</option></select><select data-product-filter aria-label="Filter by product"><option value="">All products</option></select><select data-content-sort aria-label="Sort stories"><option value="recommended">Featured</option><option value="newest">Newest first</option><option value="oldest">Oldest first</option></select></div></div>
+<div className="content-grid" data-catalog-initial>
+{{CARDS}}
+
+</div>
+<div className="content-grid" data-catalog-results hidden></div>
+{{PAGINATION}}
+<div className="catalog-load-error" data-catalog-error role="status" hidden><p>Unable to load stories.</p><button type="button" data-catalog-retry>Try again</button></div>
+<div className="catalog-empty" data-content-empty hidden><h2>No stories found</h2><button type="button" data-content-reset>Clear filters</button></div>
+</section>
+<section className="resource-cta"><h2>Put document AI<br /><span>to work.</span></h2><a className="site-button" href="https://www.textin.ai/contact">Talk to our team</a></section>
+</div>
+</div>

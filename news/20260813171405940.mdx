@@ -3,21 +3,21 @@ title: When a table crosses pages, context must follow
 description: Why joining table fragments takes more than matching columns—and how to evaluate the result.
 sidebarTitle: When a table crosses pages, context must follow
 keywords:
-- xParse
-- Engineering
-- document intelligence
+  - xParse
+  - Engineering
+  - document intelligence
 mode: center
 hideFooterPagination: true
 timestamp: false
-date: '2026-08-17'
-product: xParse
-cover: /images/journal/cross-page.webp
 source: https://www.textin.com/news/20260813171405940
-category: Engineering
-og:image: /images/journal/cross-page.webp
+og:image: https://intsig-2a639cbc.mintlify.site/images/journal/cross-page.webp
 ---
 
-<div className="article-meta not-prose"><a className="article-back" href="/news/list" data-content-back><span aria-hidden="true">←</span> Back to journal</a><div><span>Engineering</span><span>xParse</span><time dateTime="2026-08-17">2026-08-17</time></div></div>
+{/* content:metadata:start */}
+[Back to journal](/news/list)
+
+Engineering · xParse · Aug 17, 2026
+{/* content:metadata:end */}
 
 A bank statement can look straightforward: account details at the top, transactions underneath, and the same headings on the next page. Yet a parser may treat each page as a new table. Downstream, one statement becomes several partial datasets, repeated headings become records, and totals lose their context.
 
@@ -81,14 +81,13 @@ TextIn xParse provides table parsing and source-location information for documen
 
 ## Keep exploring
 
-<Columns cols={2}>
+<CardGroup cols={2}>
   <Card title="Parsing dense tables without losing a row" href="/news/20260731145844973">xParse · Journal</Card>
   <Card title="Making every contract clause verifiable" href="/cases/20261016113656382">Customer story · xParse</Card>
-</Columns>
+</CardGroup>
 
-<div className="article-return not-prose" role="navigation" aria-label="Article navigation"><a className="article-back" href="/news/list" data-content-back><span aria-hidden="true">←</span> Back to journal</a></div>
+{/* content:footer:start */}
+[Back to journal](/news/list)
 
-<section className="resource-cta article-cta not-prose" aria-label="Contact TextIn">
-  <h2>Put document AI<br /><span className="cta-accent">to work.</span></h2>
-  <a className="site-button" href="https://www.textin.ai/contact">Talk to our team</a>
-</section>
+<Card title="Put document AI to work." href="https://www.textin.ai/contact" cta="Talk to our team" />
+{/* content:footer:end */}
