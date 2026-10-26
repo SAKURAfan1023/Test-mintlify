@@ -103,7 +103,7 @@
     const section = catalog;
     const request = ++revision;
     const current = state();
-    const filtered = entries.filter(item => (!current[section.dataset.filterKey] || item.category === current[section.dataset.filterKey])
+    const filtered = entries.filter(item => (!current[section.dataset.filterKey] || [item.category].flat().includes(current[section.dataset.filterKey]))
       && (!current.scenario || item.scenarios.includes(current.scenario))
       && (!current.product || item.products.includes(current.product))
       && (!current.q || normalize(item.search).includes(normalize(current.q))));
@@ -236,7 +236,7 @@
     const params = new URLSearchParams(location.search);
     const filters = catalog.querySelector('[data-category-filters]');
     filters.querySelectorAll('button:not([data-category-filter=""])').forEach(button => button.remove());
-    for (const value of new Set(entries.map(item => item.category))) {
+    for (const value of new Set(entries.flatMap(item => item.category))) {
       const button = document.createElement('button');
       button.type = 'button'; button.dataset.categoryFilter = value; button.textContent = value;
       filters.appendChild(button);

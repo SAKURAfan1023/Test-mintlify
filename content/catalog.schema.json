@@ -41,7 +41,7 @@
       "properties": {
         "page": { "$ref": "#/definitions/common/page" },
         "date": { "$ref": "#/definitions/common/date" },
-        "industry": { "$ref": "#/definitions/text", "description": "所属行业。" },
+        "industry": { "oneOf": [{ "$ref": "#/definitions/text" }, { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/definitions/text" } }], "description": "所属行业；多个行业填数组，例如 [\"Automotive\", \"Manufacturing\"]。" },
         "scenarios": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/definitions/text" }, "description": "应用场景，可填写多个。" },
         "product": { "oneOf": [{ "$ref": "#/definitions/common/product" }, { "type": "array", "minItems": 2, "uniqueItems": true, "items": { "$ref": "#/definitions/common/product" } }], "description": "单个产品填字符串；同时使用多个产品时填数组，例如 [\"xParse\", \"DocFlow\"]。" },
         "cover": { "$ref": "#/definitions/common/cover" },

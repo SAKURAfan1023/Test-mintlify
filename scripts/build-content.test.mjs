@@ -141,6 +141,34 @@ test('catalog strings are escaped and removing an entry removes all listing refe
   assert.match(await read(directory, 'news/new-article.mdx'), /Keep this body unchanged\./);
 });
 
+test('multiple industries stay separate in cards, article metadata and the global pagination index', async t => {
+  const { directory, catalog, save, article } = await fixture(t);
+  await buildContent(directory);
+  const news = await read(directory, 'news/list.mdx');
+  for (let index = 1; index <= 6; index++) {
+    const page = `cases/customer-${index}`;
+    await writeFile(path.join(directory, `${page}.mdx`), article);
+    catalog.cases.push({ page, date: '2026-10-23', industry: index === 6 ? ['Automotive', 'Manufacturing'] : 'Manufacturing', scenarios: ['Finance automation'], product: 'DocFlow', cover: '/images/cover.webp', customer: `Customer ${index}`, metric: { value: '60%', label: 'improvement' } });
+  }
+  await save();
+  await buildContent(directory);
+  const first = await read(directory, 'cases/list.mdx');
+  const second = await read(directory, 'cases/list/2.mdx');
+  const entries = JSON.parse(first.match(/data-catalog-index="([^"]*)"/)[1].replaceAll('&quot;', '"').replaceAll('&#123;', '{').replaceAll('&#125;', '}'));
+  assert.deepEqual(entries[5].category, ['Automotive', 'Manufacturing']);
+  assert.equal(entries.filter(item => [item.category].flat().includes('Manufacturing')).length, 6);
+  assert.equal(entries.filter(item => [item.category].flat().includes('Automotive')).length, 1);
+  assert.match(second, /<span className="content-industries"><span>Automotive<\/span><span>Manufacturing<\/span><\/span>/);
+  assert.match(await read(directory, 'cases/customer-6.mdx'), /Automotive · Manufacturing · DocFlow · Oct 23, 2026/);
+  assert.equal(await read(directory, 'news/list.mdx'), news);
+  for (const industry of [[], ['Automotive', 'Automotive'], [' ']]) {
+    catalog.cases[5].industry = industry;
+    await save();
+    await assert.rejects(buildContent(directory), /content\/catalog.json/);
+    assert.equal(await read(directory, 'cases/list/2.mdx'), second);
+  }
+});
+
 test('case pages contain at most five cards and remove obsolete pages without changing news', async t => {
   const { directory, catalog, save, article } = await fixture(t);
   await buildContent(directory);

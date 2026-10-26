@@ -81,6 +81,26 @@ Describe verified outcomes and supporting evidence.
 
 ## 4. 填写列表信息表
 
+蓝框字段在 **Files → content/catalog.json** 修改；紫框字段在**对应文章的 Page settings 或页头**修改。图中编号与下方字段一一对应，点击图片可放大。
+
+### 案例：对照卡片找字段
+
+[![案例列表字段对照：客户名、Logo、封面、行业、日期、标题、摘要、成果、场景和产品](images/guide/cases-fields.webp)](images/guide/cases-fields.webp)
+
+例如：只改客户名称，修改 `customer`；只改卡片标题，打开该记录 `page` 对应的文章，修改 `title`。
+
+### 新闻：对照卡片找字段
+
+[![新闻列表字段对照：封面、分类、日期、标题、摘要、阅读时长和产品](images/guide/news-fields.webp)](images/guide/news-fields.webp)
+
+例如：将 `readMinutes` 从 `4` 改为 `6`，卡片显示 `6 min read`；修改 `category`，卡片分类与上方筛选同步变化。
+
+### 一篇案例设置多个行业
+
+[![Webasto 多行业示例：JSON 中的两个行业分别显示在卡片上，并归入各自的行业筛选](images/guide/multi-industry.webp)](images/guide/multi-industry.webp)
+
+`industry` 支持单个字符串或数组。多个行业分别填入数组；上方按每个行业独立归类，同一案例不会重复计数。行业与场景分开维护：行业填 `industry`，应用场景填 `scenarios`。
+
 ### 新闻：在 `news` 数组中新增
 
 ```json
@@ -101,7 +121,7 @@ Describe verified outcomes and supporting evidence.
 {
   "page": "cases/your-customer-story",
   "date": "2026-10-23",
-  "industry": "Software",
+  "industry": ["Automotive", "Manufacturing"],
   "scenarios": ["Contract analysis", "Knowledge management"],
   "product": "xParse",
   "cover": "/images/cases/your-customer/cover.webp",
@@ -117,21 +137,21 @@ Describe verified outcomes and supporting evidence.
 
 替换示例路径并先上传对应图片；没有 Logo 时删除整行 `customerLogo`。未公开客户使用已确认的匿名名称，成果必须有事实支撑。
 
-### 字段与展示结果
+### 图片之外的规则
 
 | 字段或操作 | 呈现结果 |
 | --- | --- |
 | `page` | 连接对应文章；与 Path 一致，不带开头 `/` 和 `.mdx`，不可重复 |
-| `date` | 显示发布日期，参与 Newest first / Oldest first 排序；格式为 `YYYY-MM-DD` |
-| `category` / `industry` | 新闻分类 / 案例行业，同时成为列表筛选项 |
+| `date` | 格式为 `YYYY-MM-DD`，例如 `2026-10-23` |
+| `category` / `industry` | 新闻分类填单个名称；案例行业可填多个。沿用现有名称及大小写，新增名称会自动成为筛选项 |
 | `scenarios` | 案例场景筛选；多个场景写为数组，不使用 `\|` 拼接 |
 | `product` | 产品筛选；新闻填单个字符串，案例可填 `["xParse", "DocFlow"]` |
-| `customer` / `customerLogo` | 案例卡片突出显示客户名称及可选 Logo；客户名同时用于控制台文章导航 |
-| `metric.value` / `metric.label` | 案例卡片展示成果值和说明；两个字段都必填 |
-| `readMinutes` | 新闻卡片显示预计阅读分钟数，填大于 0 的整数 |
+| `customer` | 同时用于控制台文章导航名称 |
+| `metric.value` / `metric.label` | 两个字段都必填，成果须有事实支撑 |
+| `readMinutes` | 填大于 0 的整数 |
 | `featured: true` | 卡片使用大版式；新闻、案例各最多一条，不会自动移到首位 |
 | 调整数组中记录顺序 | 改变默认 Featured 排序；要首位大卡，需同时移到数组第一条并设为 `true` |
-| 增加新分类、行业、产品或场景 | 自动增加筛选选项；注意大小写及空格，避免同义项重复 |
+| 增加新产品或场景 | 自动增加筛选选项；注意大小写及空格，避免同义项重复 |
 
 JSON 使用英文双引号，记录之间加逗号，最后一条后不加逗号；`true`、`false` 不加引号，不写注释。
 

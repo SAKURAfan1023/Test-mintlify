@@ -280,7 +280,10 @@
     {
       "page": "cases/20260109165413680",
       "date": "2026-01-09",
-      "industry": "Automotive",
+      "industry": [
+        "Automotive",
+        "Manufacturing"
+      ],
       "product": "DocFlow",
       "cover": "/images/cases/20260109165413680/cover.webp",
       "scenarios": [

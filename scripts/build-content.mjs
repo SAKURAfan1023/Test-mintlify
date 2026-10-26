@@ -14,6 +14,7 @@ const footerStart = '{/* content:footer:start */}';
 const footerEnd = '{/* content:footer:end */}';
 const escape = value => String(value).replace(/[&<>"'{}]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '{': '&#123;', '}': '&#125;' }[char]));
 const markdown = value => String(value).replace(/[\\`*_[\]{}<>]/g, '\\$&');
+const categoryNames = item => [item.category || item.industry].flat();
 const productNames = item => Array.isArray(item.product) ? item.product : [item.product];
 const shortDate = date => new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' }).format(new Date(`${date}T00:00:00Z`));
 
@@ -40,7 +41,8 @@ export function validateCatalog(catalog, schema) {
 function renderCard(article, home = false) {
   const { item, title, description } = article;
   const kind = item.page.split('/')[0];
-  const category = item.category || item.industry;
+  const categories = categoryNames(item);
+  const category = categories.join(' · ');
   const featured = item.featured && !home;
   const bottom = kind === 'news'
     ? `<span className="read-time">${item.readMinutes} min read</span>`
@@ -49,7 +51,7 @@ function renderCard(article, home = false) {
   <a className="${home ? 'home-article-link' : 'content-link'}" href="/${item.page}">
     <div className="content-visual"><img src="${escape(item.cover)}" alt="" loading="${featured ? 'eager' : 'lazy'}" /></div>
     <div className="content-copy">
-      ${item.customer ? `<div className="content-customer">${item.customerLogo ? `<img src="${escape(item.customerLogo)}" alt="" loading="lazy" />` : ''}<p>${escape(item.customer)}</p></div>\n      ` : ''}<div className="content-meta"><span>${escape(category)}</span><span className="content-date">${shortDate(item.date)}</span></div>
+      ${item.customer ? `<div className="content-customer">${item.customerLogo ? `<img src="${escape(item.customerLogo)}" alt="" loading="lazy" />` : ''}<p>${escape(item.customer)}</p></div>\n      ` : ''}<div className="content-meta">${categories.length > 1 ? `<span className="content-industries">${categories.map(value => `<span>${escape(value)}</span>`).join('')}</span>` : `<span>${escape(category)}</span>`}<span className="content-date">${shortDate(item.date)}</span></div>
       <h2>${escape(title)}</h2>
       <p className="content-summary">${escape(description)}</p>
       <div className="content-bottom">${bottom}</div>
@@ -85,7 +87,7 @@ async function readArticle(directory, item, siteUrl) {
   }
   const kind = item.page.split('/')[0];
   const label = kind === 'news' ? 'journal' : 'customer stories';
-  const metadata = `${metadataStart}\n[Back to ${label}](/${kind}/list)\n\n${[item.category || item.industry, productNames(item).join(' & '), shortDate(item.date)].map(markdown).join(' · ')}\n${metadataEnd}`;
+  const metadata = `${metadataStart}\n[Back to ${label}](/${kind}/list)\n\n${[categoryNames(item).join(' · '), productNames(item).join(' & '), shortDate(item.date)].map(markdown).join(' · ')}\n${metadataEnd}`;
   let body = source.slice(match[0].length).trim();
   if (!body) throw new Error(`${file}: add the article body before listing it.`);
   const start = body.indexOf(metadataStart);
@@ -120,7 +122,7 @@ export async function buildContent(directory = root, { check = false } = {}) {
     if (!template.includes('{{CARDS}}') || !template.includes('{{COUNT}}')) throw new Error(`templates/${kind}-list.mdx: missing CARDS or COUNT placeholder.`);
     const entries = articles[kind].map(({ item, title, description }, index) => ({
       page: item.page, category: item.category || item.industry, products: productNames(item), scenarios: item.scenarios || [], date: item.date,
-      search: [item.customer, item.category || item.industry, title, description, item.metric?.value, item.metric?.label, ...productNames(item), ...(item.scenarios || []), kind === 'news' ? `${item.readMinutes} min read` : ''].filter(value => value !== undefined && value !== '').join(' '),
+      search: [item.customer, ...categoryNames(item), title, description, item.metric?.value, item.metric?.label, ...productNames(item), ...(item.scenarios || []), kind === 'news' ? `${item.readMinutes} min read` : ''].filter(value => value !== undefined && value !== '').join(' '),
       chunk: Math.floor(index / pageSize) + 1
     }));
     for (let page = 1; page <= Math.max(1, Math.ceil(entries.length / pageSize)); page++) {
