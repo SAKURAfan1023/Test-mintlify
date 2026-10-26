@@ -1,35 +1,29 @@
 # TextIn Resources · 运营操作指南
 
-控制台左侧展开 **Files → README.md**，即可查看本指南。README 不发布到官网；公开仓库中仍可阅读，请勿写入账号、密钥或未公开资料。
+控制台 **Files → README.md** 可查看本指南。每篇文章只维护一个 MDX：页头决定列表展示，下面编写正文。无需另外填写 JSON，也无需修改列表文件。
 
-## 1. 从哪里修改
+## 1. 打开要修改的文章
 
-| 要做什么 | 打开哪里 | 页面会怎样变化 |
+| 要做什么 | 打开哪里 | 修改位置 |
 | --- | --- | --- |
-| 修改新闻正文 | Navigation → Journal → 对应文章 | 更新新闻详情 |
-| 修改客户案例 | Navigation → Customer stories → 对应客户 | 更新案例详情 |
-| 修改标题、摘要 | 文章顶部，或 `… → Page settings` | 自动生成后同步到详情和列表卡片 |
-| 修改日期、封面、分类、客户信息 | Files → `content/catalog.json` | 自动生成后更新卡片、详情信息栏及筛选项 |
-| 新增内容 | New page + 信息表新增一条记录 | 自动生成列表卡片、文章导航及分页 |
-| 修改布局、按钮、公共 CTA | 交给开发 | 统一调整站点样式 |
+| 修改案例 | Navigation → Customer stories → 对应客户 | 正文直接编辑；列表信息打开 `… → Source mode` |
+| 修改新闻 | Navigation → Journal → 对应文章 | 同上 |
+| 修改标题、摘要 | 文章顶部，或 `… → Page settings` | `title`、`description` |
+| 修改封面、日期、分类、客户信息 | 当前文章 → `… → Source mode` | 页头的 `listing` 区域 |
+| 上传图片 | Files → `images/` | 上传后将路径填入当前文章 |
+| 修改布局、按钮、公共 CTA | 交给开发 | 无需运营调整 |
 
-文章写英文；分类、行业、产品和场景沿用现有英文名称。
+文章路径就是文件位置，例如 `cases/acme-contract-review.mdx` 对应 `/cases/acme-contract-review`。已上线文章保留原路径。
 
 ## 2. 新增一篇内容
 
-1. 打开右上角 **… → Branches**，新建内容分支，例如 `content/new-customer`。新版界面也可从顶部的分支名称进入。
-2. 点击 **New page**，填写标题和摘要。
-3. 打开 **… → Page settings → Path**，新闻使用 `news/英文短名称`，案例使用 `cases/英文短名称`，例如 `cases/acme-contract-review`。已上线文章保留原路径。
-4. 在可视化编辑器编写正文；使用下节模板时，打开 **… → Source mode** 粘贴。
-5. 上传封面；有已确认的客户 Logo 时一并上传。记录图片路径。
-6. 展开 **Files → content → catalog.json**，在 `news` 或 `cases` 数组中复制一条记录，按第 4 节填写。
-7. 按第 6 节提交、预览、审核和发布。
+1. 打开右上角 **… → Branches**，新建内容分支，例如 `content/new-customer`。
+2. 点击 **New page**；在 **… → Page settings → Path** 填写 `cases/英文短名称` 或 `news/英文短名称`。
+3. 打开 **… → Source mode**，参考下面模板填写页头和正文。
+4. 上传封面，有已确认的客户 Logo 时一并上传，将路径填入 `listing`。
+5. 保存到工作分支，等待自动生成，再检查完整站点预览。通过后审核发布。
 
-**正文与信息表缺一不可。** 只有正文不会生成列表卡片；只有信息表、没有对应文章或图片，会校验失败。
-
-### 正文模板
-
-以下可直接粘贴到新页面的 Source mode，再替换文字。新闻可将三个章节改为主题对应的小标题。
+### 案例模板
 
 ```mdx
 ---
@@ -38,8 +32,22 @@ description: "How Acme connects extracted clauses to their source documents."
 keywords:
   - contract analysis
   - xParse
-mode: center
-hideFooterPagination: true
+listing:
+  customer: Acme
+  industry:
+    - Automotive
+    - Manufacturing
+  scenarios:
+    - Contract analysis
+  product: xParse
+  date: "2026-10-26"
+  cover: /images/cases/acme/cover.webp
+  customerLogo: /images/cases/acme/logo.webp
+  metric:
+    value: "60%"
+    label: "less time spent on manual review"
+  order: 0
+  featured: false
 ---
 
 Introduce the customer and the business context.
@@ -57,147 +65,115 @@ Explain the workflow and the role of TextIn.
 Describe verified outcomes and supporting evidence.
 ```
 
-模板中的 Acme 为示例，发布前替换为已确认的客户与事实。
+Acme、图片路径和成果均为示例，发布前替换为已确认的信息；没有 Logo 时删除 `customerLogo` 一行。
 
-## 3. 编写正文与图片
+### 新闻页头模板
 
-| 操作 | 呈现结果 | 建议 |
-| --- | --- | --- |
-| 输入 `/`，选择 Heading 2 | 正文章节与右侧目录 | 正文从二级标题开始，不再重复文章标题 |
-| 选择 Heading 3 | 章节内的小标题 | 用于步骤、能力或成果分组 |
-| 插入图片或拖入图片 | 在当前位置显示图片 | 正文图片填写简短英文说明；上传前转为 WebP |
-| 插入 List、Table | 要点列表、对比表格 | 表格用于参数和比较，长段落使用普通正文 |
-| 插入官方 Note、Tip、Warning | 提示框 | 只保留影响读者操作的信息 |
-| 插入官方 Steps、Accordion、Tabs | 步骤、折叠区、切换内容 | 有连续步骤或并列内容时再使用 |
-| 添加普通链接 | 可点击文字 | 站内链接使用 `/cases/路径` 或 `/news/路径` |
+替换为文章自己的标题、摘要和图片，在第二条 `---` 之后编写正文。
 
-封面建议使用横向图片，重要内容放在中央，列表会裁切边缘。上传到 Files 的 `images/` 下，路径以 `/images/` 开头；封面和 Logo 支持 `.webp`、`.jpg`、`.jpeg`、`.svg`，信息表不接受 `.png`。
+```yaml
+---
+title: "Your article title"
+description: "A short summary of the article."
+keywords:
+  - document intelligence
+listing:
+  category: Guides
+  product: xParse
+  date: "2026-10-26"
+  cover: /images/journal/your-cover.webp
+  readMinutes: 4
+  order: 0
+  featured: false
+---
+```
 
-**封面、列表 Logo 与正文图片分别维护。** 修改 `cover` 不会替换正文图片；填写 `customerLogo` 只在案例列表客户名称旁显示 Logo。
+`listing` 下缩进两个空格；`metric.value` 等下一层再缩进两个空格。不使用 Tab。日期和带 `%` 等符号的成果值用引号包住。
 
-标题和摘要在文章中维护；`keywords` 在 Page settings 或 Source mode 的页头维护，用于页面 SEO，不会新增筛选项，也不会替代正文。
+## 3. 对照页面找字段
 
-文章顶部的信息栏、返回列表、底部联系按钮由系统生成。正文只使用 Markdown 和 Mintlify 官方组件，不添加 `<time>`、`<div>`、自定义组件或脚本；不要改动 `content:metadata`、`content:footer` 注释之间的内容。
+图中蓝框对应**当前文章 `listing` 下的字段**，紫框对应**同一篇文章的 `title`、`description`**。点击图片可放大。
 
-## 4. 填写列表信息表
-
-蓝框字段在 **Files → content/catalog.json** 修改；紫框字段在**对应文章的 Page settings 或页头**修改。图中编号与下方字段一一对应，点击图片可放大。
-
-### 案例：对照卡片找字段
+### 案例列表
 
 [![案例列表字段对照：客户名、Logo、封面、行业、日期、标题、摘要、成果、场景和产品](images/guide/cases-fields.webp)](images/guide/cases-fields.webp)
 
-例如：只改客户名称，修改 `customer`；只改卡片标题，打开该记录 `page` 对应的文章，修改 `title`。
+例如：只改客户名称，修改 `listing.customer`；只改卡片标题，修改页头的 `title`。两者都在当前 MDX 内。
 
-### 新闻：对照卡片找字段
+### 新闻列表
 
 [![新闻列表字段对照：封面、分类、日期、标题、摘要、阅读时长和产品](images/guide/news-fields.webp)](images/guide/news-fields.webp)
 
-例如：将 `readMinutes` 从 `4` 改为 `6`，卡片显示 `6 min read`；修改 `category`，卡片分类与上方筛选同步变化。
+例如：将 `listing.readMinutes` 从 `4` 改为 `6`，卡片显示 `6 min read`；修改 `listing.category`，卡片分类与上方筛选同步变化。
 
 ### 一篇案例设置多个行业
 
-[![Webasto 多行业示例：JSON 中的两个行业分别显示在卡片上，并归入各自的行业筛选](images/guide/multi-industry.webp)](images/guide/multi-industry.webp)
+[![在当前 MDX 页头配置多个行业，卡片分别显示并归入各自的行业筛选](images/guide/multi-industry.webp)](images/guide/multi-industry.webp)
 
-`industry` 支持单个字符串或数组。多个行业分别填入数组；上方按每个行业独立归类，同一案例不会重复计数。行业与场景分开维护：行业填 `industry`，应用场景填 `scenarios`。
+`listing.industry` 支持单个名称或数组。行业与场景分开维护：行业填 `industry`，应用场景填 `scenarios`。多个行业各自参与筛选，同一案例不会重复计数。
 
-### 新闻：在 `news` 数组中新增
+## 4. 常用配置与结果
 
-```json
-{
-  "page": "news/your-article",
-  "date": "2026-10-23",
-  "category": "Guides",
-  "product": "xParse",
-  "cover": "/images/journal/your-cover.webp",
-  "readMinutes": 4,
-  "featured": false
-}
-```
+下表字段均位于 `listing` 内，标题、摘要和关键词除外。
 
-### 案例：在 `cases` 数组中新增
-
-```json
-{
-  "page": "cases/your-customer-story",
-  "date": "2026-10-23",
-  "industry": ["Automotive", "Manufacturing"],
-  "scenarios": ["Contract analysis", "Knowledge management"],
-  "product": "xParse",
-  "cover": "/images/cases/your-customer/cover.webp",
-  "customer": "Your customer name",
-  "customerLogo": "/images/cases/your-customer/logo.webp",
-  "metric": {
-    "value": "Your verified result",
-    "label": "Brief explanation of the result"
-  },
-  "featured": false
-}
-```
-
-替换示例路径并先上传对应图片；没有 Logo 时删除整行 `customerLogo`。未公开客户使用已确认的匿名名称，成果必须有事实支撑。
-
-### 图片之外的规则
-
-| 字段或操作 | 呈现结果 |
+| 修改项 | 结果或规则 |
 | --- | --- |
-| `page` | 连接对应文章；与 Path 一致，不带开头 `/` 和 `.mdx`，不可重复 |
-| `date` | 格式为 `YYYY-MM-DD`，例如 `2026-10-23` |
-| `category` / `industry` | 新闻分类填单个名称；案例行业可填多个。沿用现有名称及大小写，新增名称会自动成为筛选项 |
-| `scenarios` | 案例场景筛选；多个场景写为数组，不使用 `\|` 拼接 |
-| `product` | 产品筛选；新闻填单个字符串，案例可填 `["xParse", "DocFlow"]` |
-| `customer` | 同时用于控制台文章导航名称 |
-| `metric.value` / `metric.label` | 两个字段都必填，成果须有事实支撑 |
-| `readMinutes` | 填大于 0 的整数 |
-| `featured: true` | 卡片使用大版式；新闻、案例各最多一条，不会自动移到首位 |
-| 调整数组中记录顺序 | 改变默认 Featured 排序；要首位大卡，需同时移到数组第一条并设为 `true` |
-| 增加新产品或场景 | 自动增加筛选选项；注意大小写及空格，避免同义项重复 |
+| `order` | 默认顺序，数字越小越靠前；省略为 `0`。相同值按日期从新到旧，再按文章路径排序 |
+| `featured: true` | 使用推荐大卡版式；案例、新闻各最多一篇。不会自动置顶，需要同时调整 `order` |
+| `date` | 展示日期，参与 Newest first / Oldest first 排序；未来日期不会定时发布 |
+| `industry` / `category` | 案例行业可填多个；新闻分类填单个名称。新名称自动成为筛选项，沿用现有英文名称及大小写 |
+| `scenarios` | 案例场景数组，一个场景写一项，不将多个名称拼成一个字符串 |
+| `product` | 新闻填单个产品；案例支持单个产品或 `[xParse, DocFlow]` |
+| `cover` / `customerLogo` | 封面与列表客户 Logo，路径以 `/images/` 开头；不会替换正文图片 |
+| `metric.value` / `metric.label` | 成果值与说明，两个都必填，须有事实支撑 |
+| `readMinutes` | 新闻预计阅读分钟数，填大于 `0` 的整数 |
+| `keywords` | 页头的关键词，用于 SEO，不会新增列表筛选项 |
+| 删除整个 `listing` 区域 | 从列表和文章导航撤下，正文文件与原网址仍保留 |
 
-JSON 使用英文双引号，记录之间加逗号，最后一条后不加逗号；`true`、`false` 不加引号，不写注释。
+两组列表每页 5 条；搜索、分类、场景、产品和排序覆盖全部文章。首页 Journal 展示日期最新的 3 篇新闻，不受 `order`、`featured` 影响。
 
-## 5. 首页、筛选与分页规则
+## 5. 编写正文与图片
 
-- 首页 Journal 自动展示 `date` 最新的 3 篇新闻，与数组顺序和 `featured` 无关。
-- Journal、Customer stories 均每页 5 条，超过 5 条自动生成分页；筛选、排序覆盖全部记录。
-- 列表搜索匹配标题、摘要、分类、产品等卡片信息，案例另含客户、场景与成果；不搜索正文全文。
-- 行业、场景、产品和搜索可以组合使用；从详情返回时保留页码与筛选条件。
-- 填未来日期只会改变展示和排序，**不会定时发布**。未完成的内容保留在未合并的工作分支。
-
-## 6. 提交、预览与发布
-
-| 步骤 | 操作 | 完成标志 |
+| 操作 | 呈现结果 | 用法 |
 | --- | --- | --- |
-| 保存到工作分支 | Publish 菜单 → Save in branch；不同版本可能显示提交或创建 PR 入口 | 修改已提交到内容分支，尚未合并到线上分支 |
-| 等待自动生成 | GitHub 同一分支 → Actions → Content publishing | `validate` 与 `generate` 成功；如需更新列表，会出现机器人生成提交 |
-| 打开完整站点预览 | Publish 菜单的预览链接，或 PR 中 Mintlify 的预览链接 | 最新生成提交对应的预览构建成功 |
-| 检查 | 列表 → 筛选 → 详情 → 返回列表 → 底部联系按钮 | 内容、图片、链接与返回状态正确；手机端无溢出 |
-| 审核上线 | 创建 PR（合并申请），审核通过后 Merge and publish，或由负责人在 GitHub 合并 | 控制台 Publishes 显示成功，正式网址可见最新内容 |
+| 输入 `/`，选择 Heading 2 / Heading 3 | 章节、小标题与目录 | 正文从二级标题开始，不重复文章标题 |
+| 插入图片或拖入图片 | 当前位置显示图片 | 正文图片单独维护，填写简短英文说明 |
+| 插入 List、Table | 要点、对比表格 | 长段落使用普通正文 |
+| 官方 Note、Tip、Warning | 提示框 | 只保留影响读者操作的信息 |
+| 官方 Steps、Accordion、Tabs | 步骤、折叠区、切换内容 | 用于连续步骤或并列内容 |
+| 普通链接 | 可点击文字 | 站内使用 `/cases/文章路径` 或 `/news/文章路径` |
 
-编辑器自动保存只保存草稿，未必提交到 Git。直接在部署分支点击 Publish 会触发正式站点更新，因此使用内容分支完成生成与审核后再合并。
+图片优先上传 WebP。封面建议横向、重点居中，列表会裁切边缘；封面和 Logo 支持 `.webp`、`.jpg`、`.jpeg`、`.svg`。
 
-正文可在编辑器即时查看；信息表改动要等自动生成完成，才会更新完整站点中的列表。Mintlify 构建与 GitHub Actions 分别运行，第一次预览可能尚未包含生成结果。
+正文只使用 Markdown 和 Mintlify 官方组件，不添加 `<time>`、`<div>`、自定义组件或脚本。文章信息栏、返回列表和底部 CTA 自动生成，不编辑 `content:metadata`、`content:footer` 注释之间的内容。
 
-## 7. 常见修改与问题
+## 6. 保存、预览与发布
 
-| 情况 | 处理方式 |
+| 操作 | 会发生什么 |
 | --- | --- |
-| 只改正文 | 打开对应文章编辑，走同一套提交与审核流程 |
-| 换封面、Logo 或分类 | 修改信息表对应字段；换正文图片则在文章中单独修改 |
-| 想取消大卡片 | 将对应记录的 `featured` 改为 `false`，或删除该字段 |
-| 想从列表撤下 | 从信息表移除该条记录；生成后列表和文章导航消失，原链接仍可访问 |
-| 想彻底下线文章 | 移除记录和对应文章文件，清理站内引用；旧网址重定向交给开发 |
-| 信息表已改，列表没变 | 确认已提交同一分支，等待 Content publishing 与最新预览构建成功 |
-| 找不到 `content/catalog.json` | 展开 Files；仍无此文件时，先由开发确认分支是否已同步本版维护流程 |
-| 校验失败 | Actions → Content publishing → validate，按报错修正文章路径、缺失图片、字段或 JSON 格式后重新提交 |
-| `generate` 写回失败 | 交给开发检查机器人写权限、分支规则及冲突，再重跑工作流 |
-| 提示 `could not be rendered` | 切 Source mode 检查非官方标签；若来自自动生成区域，交给开发处理 |
-| 出现合并冲突 | 暂停合并，把分支名交给开发；不要直接覆盖其他人的修改 |
+| 在控制台编辑正文 | 编辑器显示正文效果；草稿尚未发布 |
+| 修改当前文章页头的 `listing` | 配置保存在当前文章；完整列表等待自动生成 |
+| Publish 菜单 → Save in branch，或提交到内容分支 | GitHub Actions 的 Content publishing 校验 MDX，自动更新列表、文章导航和分页 |
+| 自动生成提交完成后打开最新分支预览 | 可以检查列表信息、筛选、详情、返回状态和底部联系按钮 |
+| 审核通过后 Merge and publish，或由负责人合并 | 正式站点构建成功后显示更新 |
 
-不要直接编辑 `index.mdx`、`cases/list.mdx`、`news/list.mdx` 及其分页文件，自动生成会覆盖这些改动。公共布局、样式、域名与 `siteUrl`、自动流程由开发维护。
+控制台自动保存草稿不会直接重建完整列表。**列表跟随提交到 Git 的 MDX 自动更新**；无需修改 JSON 或生成文件。Mintlify 构建与 Actions 分别运行，检查最新生成提交对应的预览。
 
-## 8. 开发接入与本地验证
+## 7. 常见问题
 
-首次交付须完成：将本版代码同步到控制台连接的仓库；确认 GitHub Actions 启用、机器人能写回工作分支；用一篇新增内容验证“正文 + 信息表 → 自动生成 → 分支预览 → 审核发布”。在此之前，不把本地预览当成控制台流程已接通。
+| 情况 | 处理 |
+| --- | --- |
+| 新文章未出现在列表 | 检查当前 MDX 是否有完整 `listing`，以及自动生成和最新预览是否成功 |
+| 保存后列表没变 | 确认已提交工作分支，等待 Content publishing 和最新预览构建完成 |
+| 想取消推荐大卡 | 将 `listing.featured` 改为 `false` |
+| 想彻底下线文章 | 删除 MDX 并清理相关链接；旧网址重定向交给开发 |
+| 页头校验失败 | Actions → Content publishing → validate，按报错中的 MDX 路径与字段修正 |
+| 提示 `could not be rendered` | 切 Source mode 检查非官方标签；自动生成区域的问题交给开发 |
+| 自动生成写回失败或出现合并冲突 | 交给开发检查，不直接覆盖其他人的内容 |
+
+不要编辑 `index.mdx`、`cases/list.mdx`、`news/list.mdx` 及分页文件，自动生成会覆盖它们。本指南保存在公开仓库，不写入账号、密钥或未公开资料。
+
+## 8. 开发维护
 
 使用 Node.js 24 LTS：
 
@@ -206,17 +182,18 @@ npm ci --ignore-scripts
 npm run preview
 ```
 
-本地预览：[localhost:3001](http://localhost:3001)。修改正文或信息表后运行 `npm run content:build`。
+本地预览：[localhost:3001](http://localhost:3001)。预览命令监听文章、图片和模板；保存 MDX 后自动校验、生成并刷新页面。校验失败保留上次生成的列表，修正并保存后自动恢复。
 
-开发维护 `templates/`、`style.css`、`cases.js`、`scripts/` 及工作流。生成器同步两组文章导航和分页路径，保留 `docs.json` 其他站点配置；使用 GitHub 自带 `GITHUB_TOKEN`，不需要在内容中添加密钥。
+已有预览服务时，可单独运行 `npm run content:watch` 启动生成监听；一次性生成使用 `npm run content:build`。
+
+`content/site.json` 仅保存站点域名，`content/schema.json` 仅定义校验规则，均由开发维护，不存放文章信息。页面路径从 MDX 文件名自动读取；所有文章的列表配置与正文都在自身文件内。
 
 ```sh
 npm test
-npm run content:build
 npm run content:check
 node --check cases.js
 npx --yes mint@4.2.1096 validate
 npx --yes mint@4.2.1096 broken-links
 ```
 
-界面参考：[创建与编辑页面](https://www.mintlify.com/docs/editor/pages)、[分支与发布](https://www.mintlify.com/docs/editor/branching-and-publishing)、[排除文件](https://www.mintlify.com/docs/organize/mintignore)。
+首次接入须同步到控制台连接的仓库，确认 Actions 启用、机器人可写回内容分支，并验证“新增 MDX → 自动生成 → 分支预览 → 合并发布”。本地验证不等于控制台流程或正式发布已完成。

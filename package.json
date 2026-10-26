@@ -8,8 +8,9 @@
   "scripts": {
     "content:build": "node scripts/build-content.mjs",
     "content:check": "node scripts/build-content.mjs --check",
+    "content:watch": "node scripts/build-content.mjs --watch",
     "test": "node --test scripts/build-content.test.mjs",
-    "preview": "npm run content:build && npx --yes mint@4.2.1096 dev --port 3001 --no-open"
+    "preview": "node scripts/build-content.mjs --preview"
   },
   "dependencies": {
     "ajv": "8.20.0",

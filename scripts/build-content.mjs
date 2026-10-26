@@ -1,5 +1,7 @@
 import { readFile, writeFile, access, mkdir, readdir, unlink } from 'node:fs/promises';
 import path from 'node:path';
+import { watch } from 'node:fs';
+import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
@@ -17,26 +19,6 @@ const markdown = value => String(value).replace(/[\\`*_[\]{}<>]/g, '\\$&');
 const categoryNames = item => [item.category || item.industry].flat();
 const productNames = item => Array.isArray(item.product) ? item.product : [item.product];
 const shortDate = date => new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' }).format(new Date(`${date}T00:00:00Z`));
-
-export function validateCatalog(catalog, schema) {
-  const ajv = new Ajv({ allErrors: true, strict: false });
-  addFormats(ajv);
-  const valid = ajv.compile(schema);
-  if (!valid(catalog)) throw new Error(`content/catalog.json: ${ajv.errorsText(valid.errors, { separator: '\n' })}`);
-  const pages = new Set();
-  for (const kind of ['news', 'cases']) {
-    if (catalog[kind].filter(item => item.featured).length > 1) throw new Error(`${kind}: only one article can have featured: true.`);
-    for (const item of catalog[kind]) {
-      if (!item.page.startsWith(`${kind}/`)) throw new Error(`${item.page}: place this entry in ${item.page.split('/')[0]}.`);
-      if (pages.has(item.page)) throw new Error(`Duplicate article: ${item.page}`);
-      pages.add(item.page);
-      for (const field of ['cover', 'customerLogo']) {
-        if (item[field]?.split('/').includes('..')) throw new Error(`${item.page}: ${field} must stay inside images/.`);
-      }
-      if (item.scenarios?.some(value => value.includes('|'))) throw new Error(`${item.page}: put each use case in its own array item; do not use |.`);
-    }
-  }
-}
 
 function renderCard(article, home = false) {
   const { item, title, description } = article;
@@ -66,16 +48,21 @@ function pagination(kind, page, total) {
   return `<div role="navigation" className="catalog-pagination" aria-label="${kind === 'news' ? 'Journal' : 'Customer stories'} pagination" data-catalog-pagination${pages === 1 ? ' hidden' : ''}><p data-page-range>${total ? (page - 1) * pageSize + 1 : 0}–${Math.min(page * pageSize, total)} of ${total}</p><div>${link('Previous', page - 1, 'previous')}${Array.from({ length: pages }, (_, index) => link(String(index + 1), index + 1, String(index + 1))).join('')}${link('Next', page + 1, 'next')}</div></div>`;
 }
 
-async function readArticle(directory, item, siteUrl) {
-  const file = `${item.page}.mdx`;
-  let source;
-  try { source = await readFile(path.join(directory, file), 'utf8'); }
-  catch { throw new Error(`${file}: create the article in Mintlify before adding it to content/catalog.json.`); }
+async function readArticle(directory, file, siteUrl, validate) {
+  const source = await readFile(path.join(directory, file), 'utf8');
   const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
   if (!match) throw new Error(`${file}: missing page frontmatter.`);
   const document = parseDocument(match[1]);
   if (document.errors.length) throw new Error(`${file}: ${document.errors[0].message}`);
   const data = document.toJS();
+  if (!Object.hasOwn(data || {}, 'listing')) return null;
+  if (!validate(data.listing)) throw new Error(`${file}: listing ${validate.errors.map(error => `${error.instancePath} ${error.message}`).join('; ')}`);
+  const item = { ...data.listing, page: file.slice(0, -4) };
+  if (!/^(news|cases)\/[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(item.page)) throw new Error(`${file}: use a single article filename with letters, numbers, hyphens or underscores.`);
+  for (const field of ['cover', 'customerLogo']) {
+    if (item[field]?.split('/').includes('..')) throw new Error(`${file}: ${field} must stay inside images/.`);
+  }
+  if (item.scenarios?.some(value => value.includes('|'))) throw new Error(`${file}: put each use case in its own array item; do not use |.`);
   for (const key of ['title', 'description']) {
     if (typeof data?.[key] !== 'string' || !data[key].trim()) throw new Error(`${file}: add a ${key} in the page editor.`);
   }
@@ -111,11 +98,20 @@ async function readArticle(directory, item, siteUrl) {
 
 export async function buildContent(directory = root, { check = false } = {}) {
   const read = file => readFile(path.join(directory, file), 'utf8');
-  const catalog = JSON.parse(await read('content/catalog.json'));
-  const schema = JSON.parse(await read('content/catalog.schema.json'));
-  validateCatalog(catalog, schema);
+  const schema = JSON.parse(await read('content/schema.json'));
+  const settings = JSON.parse(await read('content/site.json'));
+  const ajv = new Ajv({ allErrors: true, strict: false });
+  addFormats(ajv);
+  const validateSite = ajv.compile({ ...schema, $ref: '#/definitions/site' });
+  if (!validateSite(settings)) throw new Error(`content/site.json: ${ajv.errorsText(validateSite.errors)}`);
   const articles = {};
-  for (const kind of ['news', 'cases']) articles[kind] = await Promise.all(catalog[kind].map(item => readArticle(directory, item, catalog.siteUrl)));
+  for (const kind of ['news', 'cases']) {
+    const validate = ajv.compile({ ...schema, $ref: `#/definitions/${kind === 'news' ? 'news' : 'story'}` });
+    const files = (await readdir(path.join(directory, kind))).filter(file => file.endsWith('.mdx') && file !== 'list.mdx');
+    articles[kind] = (await Promise.all(files.map(file => readArticle(directory, `${kind}/${file}`, settings.siteUrl, validate)))).filter(Boolean);
+    articles[kind].sort((a, b) => (a.item.order ?? 0) - (b.item.order ?? 0) || b.item.date.localeCompare(a.item.date) || a.item.page.localeCompare(b.item.page));
+    if (articles[kind].filter(article => article.item.featured).length > 1) throw new Error(`${kind}: only one article can have featured: true.`);
+  }
   const output = new Map();
   for (const kind of ['news', 'cases']) {
     const template = await read(`templates/${kind}-list.mdx`);
@@ -168,9 +164,54 @@ export async function buildContent(directory = root, { check = false } = {}) {
   return { changed: [...changed, ...stale], count: articles.news.length + articles.cases.length };
 }
 
+export function watchContent(directory, report) {
+  let timer;
+  let dirty = false;
+  let running = false;
+  let closed = false;
+  let pending = Promise.resolve();
+  const rebuild = () => {
+    dirty = true;
+    if (running) return;
+    running = true;
+    pending = (async () => {
+      while (dirty && !closed) {
+        dirty = false;
+        try { report(null, await buildContent(directory)); }
+        catch (error) { report(error); }
+      }
+    })().finally(() => { running = false; });
+  };
+  const watchers = ['news', 'cases', 'images', 'templates', 'content'].map(folder => watch(path.join(directory, folder), { recursive: true }, (_, filename) => {
+    const file = String(filename || '').replaceAll('\\', '/');
+    if (['news', 'cases'].includes(folder) && (!file.endsWith('.mdx') || file === 'list.mdx' || file.startsWith('list/'))) return;
+    clearTimeout(timer);
+    timer = setTimeout(rebuild, 150);
+  }));
+  return async () => {
+    closed = true;
+    clearTimeout(timer);
+    watchers.forEach(watcher => watcher.close());
+    await pending;
+  };
+}
+
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try {
     const result = await buildContent(root, { check: process.argv.includes('--check') });
     console.log(`${result.count} articles checked; ${result.changed.length} generated files updated.`);
+    if (process.argv.includes('--watch') || process.argv.includes('--preview')) {
+      const close = watchContent(root, (error, result) => {
+        if (error) console.error(error.message);
+        else if (result.changed.length) console.log(`${result.count} articles refreshed; ${result.changed.length} generated files updated.`);
+      });
+      console.log('Watching MDX articles, images and content settings.');
+      const preview = process.argv.includes('--preview') ? spawn('npx', ['--yes', 'mint@4.2.1096', 'dev', '--port', '3001', '--no-open'], { cwd: root, stdio: 'inherit' }) : null;
+      preview?.on('exit', code => { close().then(() => { process.exitCode = code ?? 1; }); });
+      preview?.on('error', error => { console.error(error.message); close().then(() => { process.exitCode = 1; }); });
+      for (const [signal, code] of [['SIGINT', 130], ['SIGTERM', 143]]) process.once(signal, () => {
+        close().then(() => { preview?.kill(signal); process.exit(code); });
+      });
+    }
   } catch (error) { console.error(error.message); process.exitCode = 1; }
 }

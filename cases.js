@@ -3,6 +3,7 @@
   window.__textinContentInstalled = true;
   const listPaths = ['/cases/list', '/news/list'];
   let catalog;
+  let catalogIndex;
   let cards = [];
   let entries = [];
   let currentPage = 1;
@@ -227,6 +228,7 @@
       link.href = safeReturn(new URLSearchParams(location.search).get('from'), link.getAttribute('href'));
     });
     catalog = document.querySelector('[data-content-catalog]');
+    catalogIndex = catalog?.dataset.catalogIndex;
     revision++;
     if (!catalog) return;
     cards = [...catalog.querySelectorAll('[data-catalog-initial] .content-card')];
@@ -298,7 +300,16 @@
   document.addEventListener('pointerdown', event => {
     document.querySelectorAll('.catalog-select').forEach(wrapper => { if (!wrapper.contains(event.target)) closeDropdown(wrapper); });
   });
-  const mount = () => requestAnimationFrame(init);
+  let mountFrame;
+  const mount = () => {
+    if (mountFrame) return;
+    mountFrame = requestAnimationFrame(() => { mountFrame = null; init(); });
+  };
+  // Local MDX hot updates can replace the catalog without a navigation event.
+  new MutationObserver(() => {
+    const next = document.querySelector('[data-content-catalog]');
+    if (next !== catalog || next?.dataset.catalogIndex !== catalogIndex) mount();
+  }).observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['data-catalog-index'] });
   window.addEventListener('mintlify:navigate', mount);
   window.addEventListener('load', mount, { once: true });
   window.addEventListener('popstate', mount);

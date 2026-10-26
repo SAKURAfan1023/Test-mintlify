@@ -1,20 +1,15 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "TextIn 内容信息表",
-  "description": "运营维护文章信息；标题和摘要读取对应文章，不需要重复填写。数组顺序即默认展示顺序。",
-  "type": "object",
-  "additionalProperties": false,
-  "required": ["siteUrl", "news", "cases"],
-  "properties": {
-    "$schema": { "type": "string" },
-    "siteUrl": { "type": "string", "format": "uri", "pattern": "^https://[a-zA-Z0-9.-]+(:[0-9]+)?$", "description": "站点公开域名，不带末尾斜杠。用于生成分享图片的完整 URL。" },
-    "news": { "type": "array", "items": { "$ref": "#/definitions/news" } },
-    "cases": { "type": "array", "items": { "$ref": "#/definitions/story" } }
-  },
+  "title": "TextIn 文章页头 listing 配置",
+  "description": "每篇 MDX 的 listing 决定列表展示；标题和摘要直接使用同一篇文章的页头。",
   "definitions": {
     "text": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "site": { "type": "object", "additionalProperties": false, "required": ["siteUrl"], "properties": {
+      "$schema": { "type": "string" },
+      "siteUrl": { "type": "string", "format": "uri", "pattern": "^https://[a-zA-Z0-9.-]+(:[0-9]+)?$", "description": "站点公开域名，由开发维护。" }
+    } },
     "common": {
-      "page": { "type": "string", "description": "文章路径，不带开头斜杠和 .mdx，例如 news/new-article。", "pattern": "^(news|cases)/[a-zA-Z0-9][a-zA-Z0-9_-]*$" },
+      "order": { "type": "integer", "minimum": 0, "description": "默认顺序，数字越小越靠前；省略为 0，相同时按日期从新到旧排序。" },
       "date": { "type": "string", "format": "date", "description": "发布日期，YYYY-MM-DD。" },
       "product": { "$ref": "#/definitions/text", "description": "产品筛选项，例如 xParse、DocFlow。" },
       "cover": { "type": "string", "pattern": "^/images/[a-zA-Z0-9_./-]+\\.(webp|jpg|jpeg|svg)$", "description": "已上传的封面图片路径，推荐 WebP。" },
@@ -23,9 +18,9 @@
     "news": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["page", "date", "category", "product", "cover", "readMinutes"],
+      "required": ["date", "category", "product", "cover", "readMinutes"],
       "properties": {
-        "page": { "$ref": "#/definitions/common/page" },
+        "order": { "$ref": "#/definitions/common/order" },
         "date": { "$ref": "#/definitions/common/date" },
         "category": { "$ref": "#/definitions/text", "description": "新闻分类，例如 Engineering、Guides。" },
         "product": { "$ref": "#/definitions/common/product" },
@@ -37,9 +32,9 @@
     "story": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["page", "date", "industry", "scenarios", "product", "cover", "customer", "metric"],
+      "required": ["date", "industry", "scenarios", "product", "cover", "customer", "metric"],
       "properties": {
-        "page": { "$ref": "#/definitions/common/page" },
+        "order": { "$ref": "#/definitions/common/order" },
         "date": { "$ref": "#/definitions/common/date" },
         "industry": { "oneOf": [{ "$ref": "#/definitions/text" }, { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/definitions/text" } }], "description": "所属行业；多个行业填数组，例如 [\"Automotive\", \"Manufacturing\"]。" },
         "scenarios": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/definitions/text" }, "description": "应用场景，可填写多个。" },
