@@ -21,7 +21,7 @@
         ]
       },
       {
-        "group": "Journal",
+        "group": "Blog",
         "pages": [
           "news/20260813171405940",
           "news/20260731145844973",
@@ -31,7 +31,7 @@
         ]
       },
       {
-        "group": "Customer stories",
+        "group": "Case Studies",
         "pages": [
           "cases/20261016113656382",
           "cases/20260915144322620",
@@ -64,11 +64,11 @@
         "href": "/"
       },
       {
-        "label": "Journal",
+        "label": "Blog",
         "href": "/news/list"
       },
       {
-        "label": "Customer stories",
+        "label": "Case Studies",
         "href": "/cases/list"
       }
     ],
@@ -139,6 +139,6 @@
     }
   },
   "search": {
-    "prompt": "Search articles and customer stories…"
+    "prompt": "Search Blog and Case Studies…"
   }
 }

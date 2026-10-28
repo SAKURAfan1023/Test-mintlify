@@ -45,7 +45,7 @@ function renderCard(article, home = false) {
 function pagination(kind, page, total) {
   const pages = Math.max(1, Math.ceil(total / pageSize));
   const link = (label, target, key) => `<a href="${listPath(kind, Math.max(1, Math.min(pages, target)))}#catalog" data-catalog-page="${key}"${target < 1 || target > pages ? ' aria-disabled="true" tabIndex="-1"' : ''}${key === String(page) ? ' aria-current="page"' : ''}>${label}</a>`;
-  return `<div role="navigation" className="catalog-pagination" aria-label="${kind === 'news' ? 'Journal' : 'Customer stories'} pagination" data-catalog-pagination${pages === 1 ? ' hidden' : ''}><p data-page-range>${total ? (page - 1) * pageSize + 1 : 0}–${Math.min(page * pageSize, total)} of ${total}</p><div>${link('Previous', page - 1, 'previous')}${Array.from({ length: pages }, (_, index) => link(String(index + 1), index + 1, String(index + 1))).join('')}${link('Next', page + 1, 'next')}</div></div>`;
+  return `<div role="navigation" className="catalog-pagination" aria-label="${kind === 'news' ? 'Blog' : 'Case Studies'} pagination" data-catalog-pagination${pages === 1 ? ' hidden' : ''}><p data-page-range>${total ? (page - 1) * pageSize + 1 : 0}–${Math.min(page * pageSize, total)} of ${total}</p><div>${link('Previous', page - 1, 'previous')}${Array.from({ length: pages }, (_, index) => link(String(index + 1), index + 1, String(index + 1))).join('')}${link('Next', page + 1, 'next')}</div></div>`;
 }
 
 async function readArticle(directory, file, siteUrl, validate) {
@@ -73,7 +73,7 @@ async function readArticle(directory, file, siteUrl, validate) {
     catch { throw new Error(`${item.page}: customer logo image not found: ${item.customerLogo}`); }
   }
   const kind = item.page.split('/')[0];
-  const label = kind === 'news' ? 'journal' : 'customer stories';
+  const label = kind === 'news' ? 'Blog' : 'Case Studies';
   const metadata = `${metadataStart}\n[Back to ${label}](/${kind}/list)\n\n${[categoryNames(item).join(' · '), productNames(item).join(' & '), shortDate(item.date)].map(markdown).join(' · ')}\n${metadataEnd}`;
   let body = source.slice(match[0].length).trim();
   if (!body) throw new Error(`${file}: add the article body before listing it.`);
@@ -90,6 +90,7 @@ async function readArticle(directory, file, siteUrl, validate) {
   document.set('mode', 'center');
   document.set('hideFooterPagination', true);
   document.set('timestamp', false);
+  if (!Object.hasOwn(item, 'homeOrder')) document.setIn(['listing', 'homeOrder'], false);
   document.set('sidebarTitle', item.customer || data.title);
   document.set('og:image', new URL(item.cover, siteUrl).href);
   const updated = `---\n${document.toString({ lineWidth: 0 })}---\n\n${body}\n`;
@@ -124,20 +125,28 @@ export async function buildContent(directory = root, { check = false } = {}) {
     for (let page = 1; page <= Math.max(1, Math.ceil(entries.length / pageSize)); page++) {
       const file = page === 1 ? `${kind}/list.mdx` : `${kind}/list/${page}.mdx`;
       const source = template.replace('{{CARDS}}', articles[kind].slice((page - 1) * pageSize, page * pageSize).map(article => renderCard(article)).join('\n\n'))
+        .replace('{{COUNT}} articles', `${entries.length} ${entries.length === 1 ? 'article' : 'articles'}`).replace('{{COUNT}} case studies', `${entries.length} ${entries.length === 1 ? 'case study' : 'case studies'}`)
         .replaceAll('{{COUNT}}', String(entries.length)).replace('{{INDEX}}', escape(JSON.stringify(entries)))
         .replace('{{PAGE_SIZE}}', String(pageSize)).replace('{{PAGE}}', String(page)).replace('{{PAGINATION}}', pagination(kind, page, entries.length));
       output.set(file, source);
     }
     for (const article of articles[kind]) output.set(article.file, article.source);
   }
-  const latest = [...articles.news].sort((a, b) => b.item.date.localeCompare(a.item.date)).slice(0, 3);
-  const home = await read('templates/index.mdx');
-  if (!home.includes('{{CARDS}}')) throw new Error('templates/index.mdx: missing CARDS placeholder.');
-  output.set('index.mdx', home.replace('{{CARDS}}', latest.map(article => renderCard(article, true)).join('\n\n')));
+  let home = await read('templates/index.mdx');
+  for (const kind of ['news', 'cases']) {
+    const placeholder = `{{${kind.toUpperCase()}_SECTION}}`;
+    if (!home.includes(placeholder)) throw new Error(`templates/index.mdx: missing ${placeholder} placeholder.`);
+    const selected = articles[kind].filter(({ item }) => Number.isInteger(item.homeOrder) && item.homeOrder > 0)
+      .sort((a, b) => a.item.homeOrder - b.item.homeOrder || b.item.date.localeCompare(a.item.date) || a.item.page.localeCompare(b.item.page));
+    const title = kind === 'news' ? 'Latest from the Blog' : 'Case Studies';
+    const cta = kind === 'news' ? 'Explore the Blog' : 'Read Case Studies';
+    home = home.replace(placeholder, selected.length ? `<section className="home-latest" data-home-section="${kind}">\n<div className="section-heading"><h2>${title}</h2><a href="/${kind}/list">${cta}</a></div>\n<div className="home-article-grid">\n${selected.map(article => renderCard(article, true)).join('\n\n')}\n</div>\n</section>` : '');
+  }
+  output.set('index.mdx', home);
   const docs = JSON.parse(await read('docs.json'));
   const groups = docs.navigation?.groups;
   if (!Array.isArray(groups)) throw new Error('docs.json: navigation.groups is required.');
-  for (const [kind, label] of [['news', 'Journal'], ['cases', 'Customer stories']]) {
+  for (const [kind, label] of [['news', 'Blog'], ['cases', 'Case Studies']]) {
     const group = groups.find(item => item.group === label);
     if (!group) throw new Error(`docs.json: missing ${label} navigation group.`);
     group.pages = articles[kind].map(article => article.item.page);

@@ -8,7 +8,10 @@
       "$schema": { "type": "string" },
       "siteUrl": { "type": "string", "format": "uri", "pattern": "^https://[a-zA-Z0-9.-]+(:[0-9]+)?$", "description": "站点公开域名，由开发维护。" }
     } },
+    "industry": { "type": "string", "enum": ["State-owned enterprises", "Financial services", "Logistics", "Healthcare & pharmaceuticals", "Education", "Manufacturing", "Transportation", "Automotive", "Software services"] },
+    "scenario": { "type": "string", "enum": ["Document structuring", "Key information extraction", "Multilingual OCR", "Enterprise knowledge bases & RAG", "Enterprise AI platforms", "Exam digitization", "Financial research document processing", "Accounts payable automation", "Expense automation", "Credit review", "Trade finance", "Logistics & trade document entry", "Lease financing risk assessment"] },
     "common": {
+      "homeOrder": { "oneOf": [{ "const": false }, { "type": "integer", "minimum": 1 }], "description": "首页展示：false 撤下；正整数选入并排序，越小越靠前。Blog 与 Case Studies 独立排序，数量不限。" },
       "order": { "type": "integer", "minimum": 0, "description": "默认顺序，数字越小越靠前；省略为 0，相同时按日期从新到旧排序。" },
       "date": { "type": "string", "format": "date", "description": "发布日期，YYYY-MM-DD。" },
       "product": { "$ref": "#/definitions/text", "description": "产品筛选项，例如 xParse、DocFlow。" },
@@ -20,9 +23,10 @@
       "additionalProperties": false,
       "required": ["date", "category", "product", "cover", "readMinutes"],
       "properties": {
+        "homeOrder": { "$ref": "#/definitions/common/homeOrder" },
         "order": { "$ref": "#/definitions/common/order" },
         "date": { "$ref": "#/definitions/common/date" },
-        "category": { "$ref": "#/definitions/text", "description": "新闻分类，例如 Engineering、Guides。" },
+        "category": { "type": "string", "enum": ["Announcements", "Technical"], "description": "Blog 分类：公告与产品更新填 Announcements；技术解析与实践指南填 Technical。" },
         "product": { "$ref": "#/definitions/common/product" },
         "cover": { "$ref": "#/definitions/common/cover" },
         "readMinutes": { "type": "integer", "minimum": 1, "description": "阅读分钟数。" },
@@ -34,10 +38,11 @@
       "additionalProperties": false,
       "required": ["date", "industry", "scenarios", "product", "cover", "customer", "metric"],
       "properties": {
+        "homeOrder": { "$ref": "#/definitions/common/homeOrder" },
         "order": { "$ref": "#/definitions/common/order" },
         "date": { "$ref": "#/definitions/common/date" },
-        "industry": { "oneOf": [{ "$ref": "#/definitions/text" }, { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/definitions/text" } }], "description": "所属行业；多个行业填数组，例如 [\"Automotive\", \"Manufacturing\"]。" },
-        "scenarios": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/definitions/text" }, "description": "应用场景，可填写多个。" },
+        "industry": { "oneOf": [{ "$ref": "#/definitions/industry" }, { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/definitions/industry" } }], "description": "所属行业；多个行业填数组，例如 [\"Automotive\", \"Manufacturing\"]。" },
+        "scenarios": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/definitions/scenario" }, "description": "应用场景，可填写多个。" },
         "product": { "oneOf": [{ "$ref": "#/definitions/common/product" }, { "type": "array", "minItems": 2, "uniqueItems": true, "items": { "$ref": "#/definitions/common/product" } }], "description": "单个产品填字符串；同时使用多个产品时填数组，例如 [\"xParse\", \"DocFlow\"]。" },
         "cover": { "$ref": "#/definitions/common/cover" },
         "customer": { "$ref": "#/definitions/text", "description": "客户名称。" },

@@ -15,11 +15,11 @@ async function fixture(t) {
   await Promise.all(['content', 'news', 'cases', 'images'].map(folder => mkdir(path.join(directory, folder))));
   await cp(path.join(project, 'templates'), path.join(directory, 'templates'), { recursive: true });
   await cp(path.join(project, 'content/schema.json'), path.join(directory, 'content/schema.json'));
-  await writeFile(path.join(directory, 'docs.json'), JSON.stringify({ navigation: { groups: [{ group: 'Resources', pages: ['index'] }, { group: 'Journal', pages: [] }, { group: 'Customer stories', pages: [] }] } }));
+  await writeFile(path.join(directory, 'docs.json'), JSON.stringify({ navigation: { groups: [{ group: 'Resources', pages: ['index'] }, { group: 'Blog', pages: [] }, { group: 'Case Studies', pages: [] }] } }));
   await writeFile(path.join(directory, 'images/cover.webp'), 'fixture');
   const article = '---\ntitle: "A new article"\ndescription: "An operator-written summary."\n---\n\n## Authored section\n\nKeep this body unchanged.\n\n<Card title="Learn more" href="https://www.textin.ai/xparse">Official component.</Card>\n';
   await writeFile(path.join(directory, 'news/new-article.mdx'), article);
-  const catalog = { siteUrl: 'https://resources.example.com', news: [{ page: 'news/new-article', date: '2026-10-23', category: 'Guides', product: 'xParse', cover: '/images/cover.webp', readMinutes: 4 }], cases: [] };
+  const catalog = { siteUrl: 'https://resources.example.com', news: [{ page: 'news/new-article', date: '2026-10-23', category: 'Technical', product: 'xParse', cover: '/images/cover.webp', readMinutes: 4, homeOrder: 10 }], cases: [] };
   const save = async () => {
     await writeFile(path.join(directory, 'content/site.json'), JSON.stringify({ siteUrl: catalog.siteUrl }));
     for (const kind of ['news', 'cases']) {
@@ -31,7 +31,7 @@ async function fixture(t) {
         const index = catalog[kind].findIndex(item => `${item.page}.mdx` === file);
         if (index >= 0) {
           const { page, ...listing } = catalog[kind][index];
-          document.set('listing', { order: (index + 1) * 10, ...listing });
+          document.set('listing', { homeOrder: false, order: (index + 1) * 10, ...listing });
         } else document.delete('listing');
         await writeFile(path.join(directory, file), `---\n${document.toString({ lineWidth: 0 })}---\n${source.slice(match[0].length)}`);
       }
@@ -50,7 +50,7 @@ test('new operator entry generates static list, home, navigation and native arti
   assert.match(await read(directory, 'index.mdx'), /A new article/);
   assert.deepEqual(JSON.parse(await read(directory, 'docs.json')).navigation.groups[1].pages, ['news/new-article']);
   const article = await read(directory, 'news/new-article.mdx');
-  assert.match(article, /Guides · xParse · Oct 23, 2026/);
+  assert.match(article, /Technical · xParse · Oct 23, 2026/);
   assert.match(article, /og:image: https:\/\/resources.example.com\/images\/cover.webp/);
   assert.match(article, /Keep this body unchanged\./);
   assert.match(article, /<Card title="Put document AI to work\."/);
@@ -71,10 +71,58 @@ test('editing the native title updates both lists without replacing authored con
   assert.match(await read(directory, 'news/new-article.mdx'), /Keep this body unchanged\./);
 });
 
+test('operators select unlimited homepage cards, order each section and withdraw with false', async t => {
+  const { directory, catalog, save, article } = await fixture(t);
+  catalog.news[0].homeOrder = false;
+  for (const [kind, count] of [['news', 6], ['cases', 4]]) {
+    for (let index = 1; index <= count; index++) {
+      const page = `${kind}/selected-${index}`;
+      await writeFile(path.join(directory, `${page}.mdx`), article);
+      catalog[kind].push({ page, date: '2026-10-23', product: 'xParse', cover: '/images/cover.webp', homeOrder: (count - index + 1) * 10,
+        ...(kind === 'news' ? { category: 'Technical', readMinutes: 4 } : { industry: 'Manufacturing', scenarios: ['Document structuring'], customer: `Customer ${index}`, metric: { value: 'Faster review', label: 'verified outcome' } }) });
+    }
+  }
+  await save();
+  await buildContent(directory);
+  const homepage = await read(directory, 'index.mdx');
+  const links = [...homepage.matchAll(/className="home-article-link" href="([^"]+)"/g)].map(match => match[1]);
+  assert.deepEqual(links, [...Array.from({ length: 6 }, (_, i) => `/news/selected-${6 - i}`), ...Array.from({ length: 4 }, (_, i) => `/cases/selected-${4 - i}`)]);
+  assert.doesNotMatch(homepage, /href="\/news\/new-article"/);
+  assert.match(homepage, /Latest from the Blog/);
+  assert.match(homepage, /data-home-section="cases"/);
+  assert.match(homepage, /Faster review/);
+  const baseline = await read(directory, 'news/list.mdx');
+  catalog.news[1].homeOrder = false;
+  await save();
+  await buildContent(directory);
+  assert.doesNotMatch(await read(directory, 'index.mdx'), /href="\/news\/selected-1"/);
+  assert.equal(await read(directory, 'news/list.mdx'), baseline);
+  assert.match(await read(directory, 'news/selected-1.mdx'), /homeOrder: false/);
+  assert.ok(JSON.parse(await read(directory, 'docs.json')).navigation.groups[1].pages.includes('news/selected-1'));
+  assert.match(await read(directory, 'news/selected-1.mdx'), /Keep this body unchanged\./);
+  for (const kind of ['news', 'cases']) for (const item of catalog[kind]) item.homeOrder = false;
+  await save();
+  await buildContent(directory);
+  assert.doesNotMatch(await read(directory, 'index.mdx'), /data-home-section=/);
+  assert.match(await read(directory, 'index.mdx'), /Put document AI/);
+});
+
+test('missing homepage settings are written back as false and never opt articles in', async t => {
+  const { directory, catalog, save } = await fixture(t);
+  delete catalog.news[0].homeOrder;
+  await save();
+  const file = path.join(directory, 'news/new-article.mdx');
+  await writeFile(file, (await readFile(file, 'utf8')).replace('  homeOrder: false\n', ''));
+  await buildContent(directory);
+  assert.match(await readFile(file, 'utf8'), /homeOrder: false/);
+  assert.doesNotMatch(await read(directory, 'index.mdx'), /className="home-article-link"/);
+  assert.deepEqual((await buildContent(directory)).changed, []);
+});
+
 test('MDX paths and frontmatter alone supply new entries and a deterministic default order', async t => {
   const { directory, article } = await fixture(t);
   for (const [slug, date, order] of [['zeta', '2026-10-25', 0], ['beta', '2026-10-24', 0], ['alpha', '2026-10-24', 0], ['priority', '2025-01-01', 5]]) {
-    const listing = `listing:\n  date: ${date}\n  category: Guides\n  product: xParse\n  cover: /images/cover.webp\n  readMinutes: 4\n${order ? `  order: ${order}\n` : ''}`;
+    const listing = `listing:\n  date: ${date}\n  category: Technical\n  product: xParse\n  cover: /images/cover.webp\n  readMinutes: 4\n${order ? `  order: ${order}\n` : ''}`;
     await writeFile(path.join(directory, `news/${slug}.mdx`), article.replace('title:', `${listing}title:`));
   }
   await buildContent(directory);
@@ -110,17 +158,17 @@ test('watching MDX refreshes the list, retains it on invalid input, and recovers
 test('a customer story carries multiple scenarios and its reported metric into the list', async t => {
   const { directory, catalog, save, article } = await fixture(t);
   await writeFile(path.join(directory, 'cases/new-story.mdx'), article.replace('A new article', 'A new customer story'));
-  catalog.cases.push({ page: 'cases/new-story', date: '2026-10-23', industry: 'Manufacturing', scenarios: ['Finance automation', 'Trade documentation'], product: 'DocFlow', cover: '/images/cover.webp', customer: 'Example company', metric: { value: '60%', label: 'reported improvement' }, featured: true });
+  catalog.cases.push({ page: 'cases/new-story', date: '2026-10-23', industry: 'Manufacturing', scenarios: ['Accounts payable automation', 'Logistics & trade document entry'], product: 'DocFlow', cover: '/images/cover.webp', customer: 'Example company', metric: { value: '60%', label: 'reported improvement' }, featured: true });
   await save();
   await buildContent(directory);
   const list = await read(directory, 'cases/list.mdx');
-  assert.match(list, /data-scenarios="Finance automation\|Trade documentation"/);
+  assert.match(list, /data-scenarios="Accounts payable automation\|Logistics &amp; trade document entry"/);
   assert.match(list, /data-category="Manufacturing"/);
   assert.match(list, /<strong>60%<\/strong>/);
   assert.match(list, /className="content-customer"><p>Example company<\/p>/);
   assert.ok(list.indexOf('Example company') < list.indexOf('className="content-meta"'));
   assert.deepEqual(JSON.parse(await read(directory, 'docs.json')).navigation.groups[2].pages, ['cases/new-story']);
-  assert.match(await read(directory, 'cases/new-story.mdx'), /Back to customer stories/);
+  assert.match(await read(directory, 'cases/new-story.mdx'), /Back to Case Studies/);
   catalog.cases[0].customerLogo = '/images/cover.webp';
   await save();
   await buildContent(directory);
@@ -143,7 +191,9 @@ test('invalid MDX listing changes never partially rewrite generated pages', asyn
     ['date', '2026-02-30', /format "date"/],
     ['cover', '/images/missing.webp', /image not found/],
     ['order', -1, /must be >= 0/],
-    ['order', 1.5, /must be integer/]
+    ['order', 1.5, /must be integer/],
+    ['category', 'Guides', /allowed values/],
+    ...[true, 0, -1, 1.5, '10', 'false', null].map(value => ['homeOrder', value, /homeOrder/])
   ]) {
     const original = catalog.news[0][field];
     catalog.news[0][field] = value;
@@ -163,7 +213,7 @@ test('invalid MDX listing changes never partially rewrite generated pages', asyn
 test('a story using both products generates separate filter values and readable article metadata', async t => {
   const { directory, catalog, save, article } = await fixture(t);
   await writeFile(path.join(directory, 'cases/securities.mdx'), article);
-  catalog.cases.push({ page: 'cases/securities', date: '2026-01-20', industry: 'Financial services', scenarios: ['Enterprise AI'], product: ['xParse', 'DocFlow'], cover: '/images/cover.webp', customer: 'Securities firm', metric: { value: '400+', label: 'AI workflows' } });
+  catalog.cases.push({ page: 'cases/securities', date: '2026-01-20', industry: 'Financial services', scenarios: ['Enterprise AI platforms'], product: ['xParse', 'DocFlow'], cover: '/images/cover.webp', customer: 'Securities firm', metric: { value: '400+', label: 'AI workflows' } });
   await save();
   await buildContent(directory);
   const list = await read(directory, 'cases/list.mdx');
@@ -182,8 +232,8 @@ test('a story using both products generates separate filter values and readable 
 
 test('catalog strings are escaped and removing an entry removes all listing references', async t => {
   const { directory, catalog, save } = await fixture(t);
-  catalog.news[0].category = 'Guides <script>{danger}</script>';
-  await save();
+  const source = await read(directory, 'news/new-article.mdx');
+  await writeFile(path.join(directory, 'news/new-article.mdx'), source.replace('A new article', 'Title <script>{danger}</script>'));
   await buildContent(directory);
   assert.match(await read(directory, 'news/list.mdx'), /&lt;script&gt;&#123;danger&#125;&lt;\/script&gt;/);
   catalog.news = [];
@@ -202,7 +252,7 @@ test('multiple industries stay separate in cards, article metadata and the globa
   for (let index = 1; index <= 6; index++) {
     const page = `cases/customer-${index}`;
     await writeFile(path.join(directory, `${page}.mdx`), article);
-    catalog.cases.push({ page, date: '2026-10-23', industry: index === 6 ? ['Automotive', 'Manufacturing'] : 'Manufacturing', scenarios: ['Finance automation'], product: 'DocFlow', cover: '/images/cover.webp', customer: `Customer ${index}`, metric: { value: '60%', label: 'improvement' } });
+    catalog.cases.push({ page, date: '2026-10-23', industry: index === 6 ? ['Automotive', 'Manufacturing'] : 'Manufacturing', scenarios: ['Accounts payable automation'], product: 'DocFlow', cover: '/images/cover.webp', customer: `Customer ${index}`, metric: { value: '60%', label: 'improvement' } });
   }
   await save();
   await buildContent(directory);
@@ -231,7 +281,7 @@ test('case pages contain at most five cards and remove obsolete pages without ch
   for (let index = 1; index <= 15; index++) {
     const page = `cases/customer-${index}`;
     await writeFile(path.join(directory, `${page}.mdx`), article.replace('A new article', `Customer ${index} story`));
-    catalog.cases.push({ page, date: '2026-10-23', industry: index > 9 ? 'Manufacturing' : 'Financial services', scenarios: ['Finance automation'], product: 'DocFlow', cover: '/images/cover.webp', customer: `Customer ${index}`, metric: { value: '60%', label: 'improvement' } });
+    catalog.cases.push({ page, date: '2026-10-23', industry: index > 9 ? 'Manufacturing' : 'Financial services', scenarios: ['Accounts payable automation'], product: 'DocFlow', cover: '/images/cover.webp', customer: `Customer ${index}`, metric: { value: '60%', label: 'improvement' } });
   }
   await save();
   await buildContent(directory);
@@ -266,15 +316,15 @@ test('case pages contain at most five cards and remove obsolete pages without ch
   assert.deepEqual((await buildContent(directory, { check: true })).changed, []);
 });
 
-test('journal paginates at five articles, keeps a global index and cleans up reduced page counts', async t => {
+test('blog paginates at five articles, keeps a global index and cleans up reduced page counts', async t => {
   const { directory, catalog, save, article } = await fixture(t);
   await buildContent(directory);
   const cases = await read(directory, 'cases/list.mdx');
   const items = [];
   for (let index = 1; index <= 11; index++) {
     const page = `news/article-${index}`;
-    await writeFile(path.join(directory, `${page}.mdx`), article.replace('A new article', `Journal article ${index}`));
-    items.push({ page, date: '2026-10-23', category: index > 5 ? 'Research' : 'Guides', product: 'xParse', cover: '/images/cover.webp', readMinutes: 4 });
+    await writeFile(path.join(directory, `${page}.mdx`), article.replace('A new article', `Blog article ${index}`));
+    items.push({ page, date: '2026-10-23', category: index > 5 ? 'Announcements' : 'Technical', product: 'xParse', cover: '/images/cover.webp', readMinutes: 4 });
   }
   for (const count of [5, 6, 11]) {
     catalog.news = items.slice(0, count);
@@ -283,10 +333,10 @@ test('journal paginates at five articles, keeps a global index and cleans up red
     const first = await read(directory, 'news/list.mdx');
     assert.equal((first.match(/data-content-page=/g) || []).length, 5);
     assert.doesNotMatch(first, /data-content-page="news\/article-6"/);
-    assert.match(first, /aria-label="Journal pagination"/);
+    assert.match(first, /aria-label="Blog pagination"/);
     assert.equal(/data-catalog-pagination hidden/.test(first), count === 5);
     const index = first.match(/data-catalog-index="([^"]*)"/)[1];
-    assert.match(index, new RegExp(`Journal article ${count}`));
+    assert.match(index, new RegExp(`Blog article ${count}`));
     assert.doesNotMatch(index, /cover\.webp/);
     const pages = JSON.parse(await read(directory, 'docs.json')).navigation.groups[0].pages;
     assert.equal(pages.includes('news/list/2'), count > 5);
@@ -295,7 +345,7 @@ test('journal paginates at five articles, keeps a global index and cleans up red
       assert.equal((second.match(/data-content-page=/g) || []).length, Math.min(count - 5, 5));
       assert.match(second, /data-content-page="news\/article-6"/);
       assert.doesNotMatch(second, /data-content-page="news\/article-1"/);
-      assert.match(first, /Research/); // An unloaded page contributes its category to global filters.
+      assert.match(first, /Announcements/); // An unloaded page contributes its category to global filters.
     }
     if (count === 11) assert.equal((await read(directory, 'news/list/3.mdx')).match(/data-content-page=/g).length, 1);
     assert.equal(await read(directory, 'cases/list.mdx'), cases);

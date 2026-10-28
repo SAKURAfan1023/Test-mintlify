@@ -13,7 +13,7 @@
   const listPath = (kind, page) => `/${kind}/list${page === 1 ? '' : `/${page}`}`;
   const normalize = value => value.toLocaleLowerCase('en-US').replace(/\s+/g, ' ').trim();
   const state = () => ({
-    [catalog.dataset.filterKey]: catalog.querySelector('[data-category-filter][aria-pressed="true"]')?.dataset.categoryFilter || '',
+    [catalog.dataset.filterKey]: catalog.querySelector('[data-industry-filter]')?.value || catalog.querySelector('[data-category-filter][aria-pressed="true"]')?.dataset.categoryFilter || '',
     ...(catalog.querySelector('[data-scenario-filter]') ? { scenario: catalog.querySelector('[data-scenario-filter]').value } : {}),
     product: catalog.querySelector('[data-product-filter]').value,
     q: catalog.querySelector('[data-content-search]').value.trim(),
@@ -27,14 +27,20 @@
   }
   function closeDropdown(wrapper) {
     wrapper.querySelector('.catalog-select-trigger').setAttribute('aria-expanded', 'false');
-    wrapper.querySelector('[role="listbox"]').hidden = true;
+    wrapper.querySelector('.catalog-select-menu').hidden = true;
+    const search = wrapper.querySelector('input');
+    if (search) {
+      search.value = '';
+      wrapper.querySelectorAll('[role="option"]').forEach(option => { option.hidden = false; });
+      wrapper.querySelector('[role="status"]').hidden = true;
+    }
   }
   function syncDropdown(select) {
     const wrapper = select.nextElementSibling;
     if (!wrapper?.matches('.catalog-select')) return;
     const label = select.selectedOptions[0].textContent;
     const trigger = wrapper.querySelector('.catalog-select-trigger');
-    trigger.textContent = label;
+    trigger.querySelector('.catalog-select-value').textContent = label;
     trigger.setAttribute('aria-label', `${select.getAttribute('aria-label')}: ${label}`);
     wrapper.querySelectorAll('[role="option"]').forEach(option => option.setAttribute('aria-selected', String(option.dataset.value === select.value)));
   }
@@ -44,12 +50,28 @@
     wrapper.className = 'catalog-select';
     const trigger = document.createElement('button');
     trigger.type = 'button'; trigger.className = 'catalog-select-trigger';
+    const value = document.createElement('span'); value.className = 'catalog-select-value'; trigger.appendChild(value);
     trigger.setAttribute('aria-haspopup', 'listbox');
     trigger.setAttribute('aria-expanded', 'false');
+    const panel = document.createElement('div');
+    panel.className = 'catalog-select-menu'; panel.hidden = true;
     const menu = document.createElement('div');
     menu.id = `catalog-select-${index}`; menu.setAttribute('role', 'listbox');
-    menu.setAttribute('aria-label', select.getAttribute('aria-label')); menu.hidden = true;
+    menu.setAttribute('aria-label', select.getAttribute('aria-label'));
     trigger.setAttribute('aria-controls', menu.id);
+    const searchable = select.hasAttribute('data-industry-filter');
+    let search;
+    let empty;
+    if (searchable) {
+      wrapper.classList.add('catalog-select--searchable');
+      search = document.createElement('input');
+      search.type = 'search'; search.placeholder = 'Search industries';
+      search.setAttribute('aria-label', 'Search industries');
+      search.setAttribute('aria-controls', menu.id);
+      panel.appendChild(search);
+      empty = document.createElement('p'); empty.textContent = 'No industries found';
+      empty.setAttribute('role', 'status'); empty.hidden = true;
+    }
     const options = [...select.options].map(item => {
       const option = document.createElement('button');
       option.type = 'button'; option.tabIndex = -1; option.setAttribute('role', 'option');
@@ -63,27 +85,40 @@
       menu.appendChild(option);
       return option;
     });
-    const open = (index = select.selectedIndex) => {
-      menu.hidden = false; trigger.setAttribute('aria-expanded', 'true'); options[index].focus();
+    const open = (index = select.selectedIndex, focusSearch = false) => {
+      panel.hidden = false; trigger.setAttribute('aria-expanded', 'true');
+      if (focusSearch && search) search.focus();
+      else options[index].focus();
     };
-    trigger.addEventListener('click', () => menu.hidden ? open() : closeDropdown(wrapper));
+    trigger.addEventListener('click', () => {
+      if (!panel.hidden) { closeDropdown(wrapper); return; }
+      open(select.selectedIndex, true);
+    });
+    search?.addEventListener('input', () => {
+      options.forEach(option => { option.hidden = Boolean(option.dataset.value) && !normalize(option.textContent).includes(normalize(search.value)); });
+      empty.hidden = options.slice(1).some(option => !option.hidden);
+    });
     wrapper.addEventListener('keydown', event => {
-      const current = options.indexOf(document.activeElement);
-      if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
+      const visible = options.filter(option => !option.hidden);
+      const current = visible.indexOf(document.activeElement);
+      const typing = event.target === search;
+      if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key) && !(typing && ['Home', 'End'].includes(event.key))) {
         event.preventDefault();
-        const next = event.key === 'Home' ? 0 : event.key === 'End' ? options.length - 1 : current < 0 ? select.selectedIndex : (current + (event.key === 'ArrowDown' ? 1 : -1) + options.length) % options.length;
-        open(next);
+        const next = event.key === 'Home' ? 0 : event.key === 'End' ? visible.length - 1 : current < 0 ? (event.key === 'ArrowUp' ? visible.length - 1 : 0) : (current + (event.key === 'ArrowDown' ? 1 : -1) + visible.length) % visible.length;
+        open(options.indexOf(visible[next]));
       } else if (event.key === 'Escape') {
         event.preventDefault(); closeDropdown(wrapper); trigger.focus();
-      } else if (!menu.hidden && event.key.length === 1 && /\S/.test(event.key)) {
-        const match = [...options.slice(current + 1), ...options.slice(0, current + 1)].find(option => option.textContent.toLowerCase().startsWith(event.key.toLowerCase()));
+      } else if (!panel.hidden && !typing && event.key.length === 1 && /\S/.test(event.key)) {
+        const match = [...visible.slice(current + 1), ...visible.slice(0, current + 1)].find(option => option.textContent.toLowerCase().startsWith(event.key.toLowerCase()));
         if (match) {
           event.preventDefault(); match.focus();
         }
       }
     });
     wrapper.addEventListener('focusout', event => { if (!wrapper.contains(event.relatedTarget)) closeDropdown(wrapper); });
-    wrapper.append(trigger, menu);
+    panel.appendChild(menu);
+    if (empty) panel.appendChild(empty);
+    wrapper.append(trigger, panel);
     select.after(wrapper); select.hidden = true;
     syncDropdown(select);
   }
@@ -121,7 +156,7 @@
     }
     if (updateUrl || url.pathname !== location.pathname) history.replaceState(history.state, '', url.pathname + url.search + url.hash);
     section.dataset.filtered = String(Boolean(current[section.dataset.filterKey] || current.scenario || current.product || current.q || current.sort !== 'recommended'));
-    const noun = section.dataset.kind === 'cases' ? (filtered.length === 1 ? 'story' : 'stories') : (filtered.length === 1 ? 'article' : 'articles');
+    const noun = section.dataset.kind === 'cases' ? (filtered.length === 1 ? 'case study' : 'case studies') : (filtered.length === 1 ? 'article' : 'articles');
     section.querySelector('[data-result-count]').textContent = `${filtered.length} ${noun}`;
     section.querySelector('[data-content-empty]').hidden = filtered.length !== 0;
     const pagination = section.querySelector('[data-catalog-pagination]');
@@ -169,7 +204,7 @@
   }
   function filter(updateUrl = true, page = 1) {
     if (!catalog?.isConnected) return;
-    catalog.querySelectorAll('[data-scenario-filter], [data-product-filter], [data-content-sort]').forEach(syncDropdown);
+    catalog.querySelectorAll('[data-industry-filter], [data-scenario-filter], [data-product-filter], [data-content-sort]').forEach(syncDropdown);
     return filterCatalog(updateUrl, page);
   }
   // Mirror DesktopV2: dark heroes stay transparent until a light surface
@@ -201,7 +236,7 @@
     // Article sources use Markdown and native components; apply the shared chrome here.
     const content = document.querySelector('#content');
     if (content) {
-      const backLinks = [...content.querySelectorAll('a[href]')].filter(link => listPaths.includes(new URL(link.href).pathname) && /^(?:←\s*)?Back to (journal|customer stories)$/.test(link.textContent.trim()));
+      const backLinks = [...content.querySelectorAll('a[href]')].filter(link => listPaths.includes(new URL(link.href).pathname) && /^(?:←\s*)?Back to (Blog|Case Studies)$/.test(link.textContent.trim()));
       backLinks.forEach((link, index) => {
         link.classList.add('article-back');
         link.setAttribute('data-content-back', '');
@@ -237,15 +272,20 @@
     for (const card of cards) if (card.dataset.contentPage) cardCache.set(card.dataset.contentPage, card);
     const params = new URLSearchParams(location.search);
     const filters = catalog.querySelector('[data-category-filters]');
-    filters.querySelectorAll('button:not([data-category-filter=""])').forEach(button => button.remove());
-    for (const value of new Set(entries.flatMap(item => item.category))) {
+    const industry = catalog.querySelector('[data-industry-filter]');
+    filters?.querySelectorAll('button:not([data-category-filter=""])').forEach(button => button.remove());
+    const categories = catalog.dataset.kind === 'news' ? ['Announcements', 'Technical'] : [...new Set(entries.flatMap(item => item.category))];
+    industry?.querySelectorAll('option:not([value=""])').forEach(option => option.remove());
+    for (const value of categories) {
+      if (industry) { industry.add(new Option(value, value)); continue; }
       const button = document.createElement('button');
       button.type = 'button'; button.dataset.categoryFilter = value; button.textContent = value;
       filters.appendChild(button);
     }
-    const buttons = [...filters.querySelectorAll('button')];
+    const buttons = [...(filters?.querySelectorAll('button') || [])];
     const requestedCategory = params.get(catalog.dataset.filterKey) ?? catalog.dataset.defaultCategory;
-    const selectedCategory = buttons.some(button => button.dataset.categoryFilter === requestedCategory) ? requestedCategory : '';
+    const selectedCategory = categories.includes(requestedCategory) ? requestedCategory : '';
+    if (industry) industry.value = selectedCategory;
     buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.categoryFilter === selectedCategory)));
     const scenario = catalog.querySelector('[data-scenario-filter]');
     if (scenario) {
@@ -264,7 +304,7 @@
     sort.value = ['recommended', 'newest', 'oldest'].includes(requestedSort) ? requestedSort : 'recommended';
     catalog.querySelector('[data-content-search]').value = params.get('q') || '';
     catalog.querySelectorAll('.catalog-select').forEach(wrapper => wrapper.remove());
-    catalog.querySelectorAll('[data-scenario-filter], [data-product-filter], [data-content-sort]').forEach(enhanceDropdown);
+    catalog.querySelectorAll('[data-industry-filter], [data-scenario-filter], [data-product-filter], [data-content-sort]').forEach(enhanceDropdown);
     filter(false, Number(location.pathname.match(/^\/(?:cases|news)\/list\/(\d+)$/)?.[1]) || 1);
   }
   // Mintlify links retain compiled hrefs. Use ordinary navigation for dynamic
@@ -290,13 +330,15 @@
       catalog.querySelector('[data-content-sort]').value = 'recommended';
       const scenario = catalog.querySelector('[data-scenario-filter]');
       if (scenario) scenario.value = '';
+      const industry = catalog.querySelector('[data-industry-filter]');
+      if (industry) industry.value = '';
     }
     const category = button.dataset.categoryFilter || '';
     catalog.querySelectorAll('[data-category-filter]').forEach(item => item.setAttribute('aria-pressed', String(item.dataset.categoryFilter === category)));
     filter();
   });
   document.addEventListener('input', event => { if (event.target.matches('[data-content-search]')) filter(); });
-  document.addEventListener('change', event => { if (event.target.matches('[data-scenario-filter], [data-product-filter], [data-content-sort]')) filter(); });
+  document.addEventListener('change', event => { if (event.target.matches('[data-industry-filter], [data-scenario-filter], [data-product-filter], [data-content-sort]')) filter(); });
   document.addEventListener('pointerdown', event => {
     document.querySelectorAll('.catalog-select').forEach(wrapper => { if (!wrapper.contains(event.target)) closeDropdown(wrapper); });
   });
