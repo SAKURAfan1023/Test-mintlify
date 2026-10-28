@@ -1,17 +1,19 @@
 # TextIn Resources · 运营操作指南
 
-控制台 **Files → README.md** 可查看本指南。每篇文章只维护一个 MDX：页头配置首页和列表展示，下面编写正文。
+控制台 **Files（文件）→ README.md** 可查看本指南。每篇文章只维护一个 MDX：页头配置首页和列表展示，下面编写正文。
 
 ## 1. 打开文章
 
 | 要做什么 | 打开哪里 | 修改位置 |
 | --- | --- | --- |
-| 修改 Blog | Navigation → Blog → 对应文章 | 正文直接编辑；配置打开 `… → Source mode` |
-| 修改案例 | Navigation → Case Studies → 对应客户 | 同上 |
-| 修改标题、摘要 | 文章顶部或 `… → Page settings` | `title`、`description`，同步首页、列表和详情 |
-| 选入首页、撤下、排序 | 当前文章 → Source mode | `listing.homeOrder` |
-| 修改封面、日期、分类、客户与 Point | 当前文章 → Source mode | `listing` 区域 |
-| 上传图片 | Files → `images/` | 上传后将路径填入当前文章 |
+| 修改 Blog | Navigation（导航）→ Blog → 对应文章 | 正文直接编辑；配置打开 `… → Source mode（源码模式）` |
+| 修改案例 | Navigation（导航）→ Case Studies → 对应客户 | 同上 |
+| 修改标题、摘要 | 当前文章 → `… → Source mode（源码模式）` | 页头的 `title`、`description`，同步首页、列表和详情 |
+| 选入首页、撤下、排序 | 当前文章 → 源码模式 | `listing.homeOrder` |
+| 修改封面、日期、分类、客户与 Point | 当前文章 → 源码模式 | `listing` 区域 |
+| 上传图片 | Files（文件）→ `images/` | 上传后将路径填入当前文章 |
+
+标题、摘要与列表配置统一在源码模式填写；页面设置仅在新增文章时用于设置网址路径，无需重复填写内容。
 
 文章路径就是文件位置，例如 `cases/acme-contract-review.mdx` 对应 `/cases/acme-contract-review`。已上线文章保留原路径。
 
@@ -42,11 +44,11 @@ Blog 自动进入 **Latest from the Blog**，案例进入 **Case Studies**，两
 
 ## 3. 新增文章
 
-1. 右上角 **… → Branches**，新建内容分支，例如 `content/new-customer`。
-2. 点击 **New page**；在 **… → Page settings → Path** 填写 `cases/英文短名称` 或 `news/英文短名称`。
-3. 打开 **… → Source mode**，参考下面模板填写页头和正文。
-4. 上传封面，有已确认的客户 Logo 时一并上传，填写图片路径。
-5. 提交工作分支，等待自动生成后检查预览，再审核发布。
+1. 右上角 **… → Branches（分支）**，新建内容分支，例如 `content/new-customer`。
+2. 点击 **New page（新建页面）**；在 **… → Page settings（页面设置）→ Path（网址路径）** 填写 `cases/英文短名称` 或 `news/英文短名称`。
+3. 打开 **… → Source mode（源码模式）**，用下方对应模板替换初始内容。页头只保留一组 `---`，第二条 `---` 后填写英文正文。
+4. 上传封面和已确认的客户 Logo，将模板中的示例客户、日期、图片路径及成果替换为真实内容；没有 Logo 时删除 `customerLogo` 一行。
+5. **Publish（发布）→ Save in branch（保存到分支）**，保存到第 1 步的内容分支；按第 8 节检查自动生成和预览，通过后再合并发布。
 
 ### Case Studies 模板
 
@@ -97,7 +99,7 @@ listing: # 首页与列表配置
 
 ### Blog 页头模板
 
-在第二条 `---` 后编写正文。
+在第二条 `---` 后编写英文正文，不只提交页头。
 
 ```yaml
 ---
@@ -121,7 +123,7 @@ listing: # 首页与列表配置
 
 ## 4. 对照列表找字段
 
-蓝框对应当前文章 `listing` 下的字段，紫框对应同一篇文章的 `title`、`description`。点击图片可放大。
+蓝框对应当前文章 `listing` 下的字段，紫框对应同一篇文章的 `title`、`description`。对照图片定位字段。
 
 ### Case Studies
 
@@ -139,60 +141,13 @@ listing: # 首页与列表配置
 
 <img src="images/guide/multi-industry.webp" alt="在 MDX 中配置多个行业，分别参与行业筛选" />
 
-<img src="images/guide/cases-fields.webp" alt="案例列表字段对照：客户名、Logo、封面、行业、日期、标题、摘要、成果、场景和产品" />`industry` 支持单个名称或数组；`scenarios` 使用数组。多个行业分别参与筛选，同一案例不重复计数。
+`industry` 支持单个名称或数组；`scenarios` 使用数组。多个行业分别参与筛选，同一案例不重复计数。
 
-<table>
-  <colgroup>
-    <col width="262" />
-    <col width="345" />
-    <col width="325" />
-  </colgroup>
-  <thead>
-    <tr>
-      <th>要做什么</th>
-      <th>打开哪里</th>
-      <th>页面会怎样变化</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>修改新闻正文</td>
-      <td>Navigation → Journal → 对应文章</td>
-      <td>更新新闻详情</td>
-    </tr>
-    <tr>
-      <td>修改客户案例</td>
-      <td>Navigation → Customer stories → 对应客户</td>
-      <td>更新案例详情</td>
-    </tr>
-    <tr>
-      <td>修改标题、摘要</td>
-      <td>文章顶部，或 `… → Page settings`</td>
-      <td>自动生成后同步到详情和列表卡片</td>
-    </tr>
-    <tr>
-      <td>修改日期、封面、分类、客户信息</td>
-      <td>Files → `content/catalog.json`</td>
-      <td>自动生成后更新卡片、详情信息栏及筛选项</td>
-    </tr>
-    <tr>
-      <td>新增内容</td>
-      <td>New page + 信息表新增一条记录</td>
-      <td>自动生成列表卡片、文章导航及分页</td>
-    </tr>
-    <tr>
-      <td>修改布局、按钮、公共 CTA</td>
-      <td>交给开发</td>
-      <td>统一调整站点样式</td>
-    </tr>
-  </tbody>
-</table>
-
-<img src="images/guide/news-fields.webp" alt="新闻列表字段对照：封面、分类、日期、标题、摘要、阅读时长和产品" />列表左上角的行业下拉支持搜索和滚动，选项从全部文章汇总，不随数量增加而换行。输入 `auto` 可找到 `Automotive`；点击后更新案例，选择 `All industries` 清除行业条件。菜单搜索只查行业名称，右侧搜索框查案例内容；行业可与场景、产品组合筛选。
+列表左上角的行业下拉支持搜索和滚动，选项从全部文章汇总，不随数量增加而换行。输入 `auto` 可找到 `Automotive`；点击后更新案例，选择 `All industries` 清除行业条件。菜单搜索只查行业名称，右侧搜索框查案例内容；行业可与场景、产品组合筛选。
 
 ## 5. 行业与场景名称
 
-<img src="images/guide/multi-industry.webp" alt="在当前 MDX 页头配置多个行业，卡片分别显示并归入各自的行业筛选" />按国内版对应关系选择下面的英文名称，保留大小写，不自行拼接或改写标签。
+按国内版对应关系选择下面的英文名称，保留大小写，不自行拼接或改写标签。
 
 | 国内行业 | `industry` |
 | --- | --- |
@@ -262,11 +217,13 @@ listing: # 首页与列表配置
 | 操作 | 结果 |
 | --- | --- |
 | 编辑正文或页头 | 保存在控制台草稿，尚未更新线上站点 |
-| Publish 菜单 → Save in branch，或提交内容分支 | GitHub Actions 的 Content publishing 校验 MDX，生成首页、列表、导航和分页 |
-| 生成提交完成后打开最新分支预览 | 检查首页选取与顺序、列表筛选、详情和返回状态 |
-| 审核后 Merge and publish，或由负责人合并 | 正式站点构建成功后显示更新 |
+| Publish（发布）→ Save in branch（保存到分支） | 提交 MDX 到内容分支；GitHub Actions 的 Content publishing 校验并生成首页、列表、导航和分页 |
+| 检查自动生成 | 在 GitHub → Actions → Content publishing 确认 validate、generate 均成功；有生成变化时，分支出现 `content: synchronize articles and lists` 提交 |
+| 打开该分支最新提交的站点预览 | 检查首页选取与顺序、列表卡片和筛选、详情及返回列表；不要只看正文编辑器预览 |
+| 审核后 Merge and publish（合并并发布），或由负责人合并到 main | 等待 main 的 Content publishing 完成，再确认 Mintlify → Publishes（发布记录）中对应最新提交显示 Successful（成功） |
+| 打开正式站点检查 | 确认首页、列表和详情均显示本次内容，完成发布 |
 
-<img src="images/guide/cases-fields.webp" alt="案例列表字段对照：客户名、Logo、封面、行业、日期、标题、摘要、成果、场景和产品" />控制台自动保存草稿不会直接重建完整列表。**列表跟随提交到 Git 的 MDX 自动更新**；无需修改 JSON 或生成文件。Mintlify 构建与 Actions 分别运行，检查最新生成提交对应的预览。 草稿自动保存不会直接重建完整首页和列表；它们跟随提交到 Git 的 MDX 更新。Mintlify 构建与 Actions 分别运行，检查最新生成提交对应的预览。
+草稿自动保存不会重建完整首页和列表；它们跟随提交到 Git 的 MDX 更新。Mintlify 构建与 Actions 分别运行，以自动生成完成后的最新提交为准。自动生成或构建失败时，按报错修正并重新保存分支，成功后再发布。
 
 ## 9. 常见问题
 
@@ -279,16 +236,14 @@ listing: # 首页与列表配置
 | 保存后页面没变 | 确认已提交分支，等待 Content publishing 与预览构建完成 |
 | 想取消推荐大卡 | 改为 `featured: false` |
 | 页头校验失败 | Actions → Content publishing → validate，按文章路径与字段修正 |
-| 提示 `could not be rendered` | 切 Source mode 检查非官方标签；自动生成区域问题交给开发 |
+| 提示 `could not be rendered` | 切 Source mode（源码模式）检查非官方标签；自动生成区域问题交给开发 |
 | 彻底下线文章、写回失败或合并冲突 | 交给开发清理链接、配置重定向或处理冲突 |
-
-<img src="images/guide/news-fields.webp" alt="新闻列表字段对照：封面、分类、日期、标题、摘要、阅读时长和产品" />不要编辑 `index.mdx`、`cases/list.mdx`、`news/list.mdx` 及分页文件，自动生成会覆盖它们。本指南保存在公开仓库，不写入账号、密钥或未公开资料。
 
 不要编辑 `index.mdx`、两个 `list.mdx` 或分页文件，自动生成会覆盖它们。公开仓库中不写账号、密钥或未公开资料。
 
 ## 10. 开发维护
 
-<img src="images/guide/multi-industry.webp" alt="Webasto 多行业示例：JSON 中的两个行业分别显示在卡片上，并归入各自的行业筛选" />使用 Node.js 24 LTS：
+使用 Node.js 24 LTS：
 
 ```sh
 npm ci --ignore-scripts
