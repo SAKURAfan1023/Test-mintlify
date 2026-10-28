@@ -50,45 +50,47 @@ Blog 自动进入 **Latest from the Blog**，案例进入 **Case Studies**，两
 
 ### Case Studies 模板
 
+中文注释用于填写提示，不显示在正式页面；字段值和正文使用英文。页头用 `#` 注释，正文用 `{/* 中文说明 */}`，不要把说明直接写成正文。
+
 ```mdx
 ---
-title: "How Acme makes contract review traceable"
-description: "How Acme connects extracted clauses to their source documents."
-keywords:
+title: "How Acme makes contract review traceable" # 文章标题：首页、列表、详情共用
+description: "How Acme connects extracted clauses to their source documents." # 摘要：首页、列表及详情页描述
+keywords: # SEO 关键词，不参与列表筛选
   - contract analysis
   - xParse
-listing:
-  homeOrder: false
-  customer: Acme
-  industry:
+listing: # 首页与列表配置
+  homeOrder: false # false 不上首页；填 10、20 等正整数选入首页，越小越靠前
+  customer: Acme # 客户名称，显示在案例卡片的醒目位置
+  industry: # 行业，可填多个；使用第 5 节的英文名称，每行一项
     - Automotive
     - Manufacturing
-  scenarios:
+  scenarios: # 应用场景，可填多个；使用第 5 节的英文名称，每行一项
     - Key information extraction
-  product: xParse
-  date: "2026-10-27"
-  cover: /images/cases/acme/cover.webp
-  customerLogo: /images/cases/acme/logo.webp
-  metric:
-    value: "60%"
-    label: "less time spent on manual review"
-  order: 0
-  featured: false
+  product: xParse # 产品标签与筛选；多个产品可填 [xParse, DocFlow]
+  date: "2026-10-27" # 展示日期，格式 YYYY-MM-DD；不会定时发布
+  cover: /images/cases/acme/cover.webp # 首页与列表封面，先上传图片再填路径
+  customerLogo: /images/cases/acme/logo.webp # 卡片客户 Logo；没有时删除这一行
+  metric: # 卡片重点 Point，须有正文事实支撑
+    value: "60%" # 醒目成果值，也可填英文短语
+    label: "less time spent on manual review" # 成果的补充说明
+  order: 0 # 列表默认排序，越小越靠前；不影响首页顺序
+  featured: false # true 使用列表推荐大卡，每类最多一篇；不自动置顶
 ---
 
-Introduce the customer and the business context.
+{/* 在这里用英文介绍客户、所属业务和使用 TextIn 的背景。 */}
 
 ## The challenge
 
-Describe the problem and its business impact.
+{/* 挑战：用英文说明原有流程的问题及其业务影响。 */}
 
 ## The solution
 
-Explain the workflow and the role of TextIn.
+{/* 方案：用英文说明处理流程、使用的产品和 TextIn 的作用。 */}
 
 ## The results
 
-Describe verified outcomes and supporting evidence.
+{/* 成果：用英文写已确认的结果与依据，与上方 metric 保持一致。 */}
 ```
 
 客户、图片路径和成果均为示例，发布前替换为已确认的信息；没有 Logo 时删除 `customerLogo` 一行。
@@ -99,19 +101,19 @@ Describe verified outcomes and supporting evidence.
 
 ```yaml
 ---
-title: "Your article title"
-description: "A short summary of the article."
-keywords:
+title: "Your article title" # 文章标题：首页、列表、详情共用
+description: "A short summary of the article." # 摘要：首页、列表及详情页描述
+keywords: # SEO 关键词，不参与列表筛选
   - document intelligence
-listing:
-  homeOrder: false
-  category: Technical
-  product: xParse
-  date: "2026-10-27"
-  cover: /images/journal/your-cover.webp
-  readMinutes: 4
-  order: 0
-  featured: false
+listing: # 首页与列表配置
+  homeOrder: false # false 不上首页；填 10、20 等正整数选入首页，越小越靠前
+  category: Technical # 只选 Technical（技术与指南）或 Announcements（公告与更新）
+  product: xParse # 产品标签与筛选，填写单个产品名称
+  date: "2026-10-27" # 展示日期，格式 YYYY-MM-DD；不会定时发布
+  cover: /images/journal/your-cover.webp # 首页与列表封面，先上传图片再填路径
+  readMinutes: 4 # 预计阅读分钟数，正整数；卡片显示 4 min read
+  order: 0 # 列表默认排序，越小越靠前；不影响首页顺序
+  featured: false # true 使用列表推荐大卡，每类最多一篇；不自动置顶
 ---
 ```
 
