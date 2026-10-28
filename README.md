@@ -17,7 +17,7 @@
 
 ## 2. 决定 Resources 首页展示什么
 
-[![Resources 首页与 homeOrder 配置对照](images/guide/home-selection.webp)](images/guide/home-selection.webp)
+<img src="images/guide/home-selection.webp" alt="Resources 首页与 homeOrder 配置对照" />
 
 在文章页头的 `listing` 内修改：
 
@@ -125,27 +125,74 @@ listing: # 首页与列表配置
 
 ### Case Studies
 
-[![案例列表字段对照：客户、Logo、封面、行业、日期、标题、摘要、Point、场景和产品](images/guide/cases-fields.webp)](images/guide/cases-fields.webp)
+<img src="images/guide/cases-fields.webp" alt="案例列表字段对照：客户、Logo、封面、行业、日期、标题、摘要、Point、场景和产品" />
 
 客户名称修改 `listing.customer`；卡片与详情标题修改 `title`；重点 Point 修改 `listing.metric.value` 和 `listing.metric.label`，支持文字，不限于数字。
 
 ### Blog
 
-[![Blog 列表字段对照：封面、分类、日期、标题、摘要、阅读时长和产品](images/guide/news-fields.webp)](images/guide/news-fields.webp)
+<img src="images/guide/news-fields.webp" alt="Blog 列表字段对照：封面、分类、日期、标题、摘要、阅读时长和产品" />
 
 `listing.readMinutes: 6` 显示 `6 min read`。`category` 只选 `Announcements` 或 `Technical`：前者用于公告、产品更新，后者用于技术解析、实践指南。分类暂无文章时显示空状态。
 
 ### 多行业案例
 
-[![在 MDX 中配置多个行业，分别参与行业筛选](images/guide/multi-industry.webp)](images/guide/multi-industry.webp)
+<img src="images/guide/multi-industry.webp" alt="在 MDX 中配置多个行业，分别参与行业筛选" />
 
-`industry` 支持单个名称或数组；`scenarios` 使用数组。多个行业分别参与筛选，同一案例不重复计数。
+<img src="images/guide/cases-fields.webp" alt="案例列表字段对照：客户名、Logo、封面、行业、日期、标题、摘要、成果、场景和产品" />`industry` 支持单个名称或数组；`scenarios` 使用数组。多个行业分别参与筛选，同一案例不重复计数。
 
-列表左上角的行业下拉支持搜索和滚动，选项从全部文章汇总，不随数量增加而换行。输入 `auto` 可找到 `Automotive`；点击后更新案例，选择 `All industries` 清除行业条件。菜单搜索只查行业名称，右侧搜索框查案例内容；行业可与场景、产品组合筛选。
+<table>
+  <colgroup>
+    <col width="262" />
+    <col width="345" />
+    <col width="325" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>要做什么</th>
+      <th>打开哪里</th>
+      <th>页面会怎样变化</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>修改新闻正文</td>
+      <td>Navigation → Journal → 对应文章</td>
+      <td>更新新闻详情</td>
+    </tr>
+    <tr>
+      <td>修改客户案例</td>
+      <td>Navigation → Customer stories → 对应客户</td>
+      <td>更新案例详情</td>
+    </tr>
+    <tr>
+      <td>修改标题、摘要</td>
+      <td>文章顶部，或 `… → Page settings`</td>
+      <td>自动生成后同步到详情和列表卡片</td>
+    </tr>
+    <tr>
+      <td>修改日期、封面、分类、客户信息</td>
+      <td>Files → `content/catalog.json`</td>
+      <td>自动生成后更新卡片、详情信息栏及筛选项</td>
+    </tr>
+    <tr>
+      <td>新增内容</td>
+      <td>New page + 信息表新增一条记录</td>
+      <td>自动生成列表卡片、文章导航及分页</td>
+    </tr>
+    <tr>
+      <td>修改布局、按钮、公共 CTA</td>
+      <td>交给开发</td>
+      <td>统一调整站点样式</td>
+    </tr>
+  </tbody>
+</table>
+
+<img src="images/guide/news-fields.webp" alt="新闻列表字段对照：封面、分类、日期、标题、摘要、阅读时长和产品" />列表左上角的行业下拉支持搜索和滚动，选项从全部文章汇总，不随数量增加而换行。输入 `auto` 可找到 `Automotive`；点击后更新案例，选择 `All industries` 清除行业条件。菜单搜索只查行业名称，右侧搜索框查案例内容；行业可与场景、产品组合筛选。
 
 ## 5. 行业与场景名称
 
-按国内版对应关系选择下面的英文名称，保留大小写，不自行拼接或改写标签。
+<img src="images/guide/multi-industry.webp" alt="在当前 MDX 页头配置多个行业，卡片分别显示并归入各自的行业筛选" />按国内版对应关系选择下面的英文名称，保留大小写，不自行拼接或改写标签。
 
 | 国内行业 | `industry` |
 | --- | --- |
@@ -219,7 +266,7 @@ listing: # 首页与列表配置
 | 生成提交完成后打开最新分支预览 | 检查首页选取与顺序、列表筛选、详情和返回状态 |
 | 审核后 Merge and publish，或由负责人合并 | 正式站点构建成功后显示更新 |
 
-草稿自动保存不会直接重建完整首页和列表；它们跟随提交到 Git 的 MDX 更新。Mintlify 构建与 Actions 分别运行，检查最新生成提交对应的预览。
+<img src="images/guide/cases-fields.webp" alt="案例列表字段对照：客户名、Logo、封面、行业、日期、标题、摘要、成果、场景和产品" />控制台自动保存草稿不会直接重建完整列表。**列表跟随提交到 Git 的 MDX 自动更新**；无需修改 JSON 或生成文件。Mintlify 构建与 Actions 分别运行，检查最新生成提交对应的预览。 草稿自动保存不会直接重建完整首页和列表；它们跟随提交到 Git 的 MDX 更新。Mintlify 构建与 Actions 分别运行，检查最新生成提交对应的预览。
 
 ## 9. 常见问题
 
@@ -235,11 +282,13 @@ listing: # 首页与列表配置
 | 提示 `could not be rendered` | 切 Source mode 检查非官方标签；自动生成区域问题交给开发 |
 | 彻底下线文章、写回失败或合并冲突 | 交给开发清理链接、配置重定向或处理冲突 |
 
+<img src="images/guide/news-fields.webp" alt="新闻列表字段对照：封面、分类、日期、标题、摘要、阅读时长和产品" />不要编辑 `index.mdx`、`cases/list.mdx`、`news/list.mdx` 及分页文件，自动生成会覆盖它们。本指南保存在公开仓库，不写入账号、密钥或未公开资料。
+
 不要编辑 `index.mdx`、两个 `list.mdx` 或分页文件，自动生成会覆盖它们。公开仓库中不写账号、密钥或未公开资料。
 
 ## 10. 开发维护
 
-使用 Node.js 24 LTS：
+<img src="images/guide/multi-industry.webp" alt="Webasto 多行业示例：JSON 中的两个行业分别显示在卡片上，并归入各自的行业筛选" />使用 Node.js 24 LTS：
 
 ```sh
 npm ci --ignore-scripts
