@@ -34,7 +34,7 @@
     const left = document.createElement('aside');
     left.className = 'article-publisher';
     left.setAttribute('aria-label', 'Publisher and sharing');
-    left.innerHTML = `<a class="article-publisher-brand" href="https://www.textin.ai" aria-label="TextIn website"><img src="/images/brand/logo-dark.webp" alt="TextIn" width="104" /></a>
+    left.innerHTML = `<p class="article-publisher-label">Published by</p><a class="article-publisher-brand" href="https://www.textin.ai" aria-label="TextIn website"><img src="/images/brand/logo-dark.webp" alt="TextIn" width="104" /></a>
       <div class="article-share"><p>Share article</p><div class="article-share-buttons">
       <a data-share="linkedin" aria-label="Share on LinkedIn" title="Share on LinkedIn" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5.4 3a2.4 2.4 0 1 0 0 4.8 2.4 2.4 0 0 0 0-4.8ZM3.5 9h3.8v12H3.5V9Zm6.2 0h3.6v1.6h.1c.5-.9 1.7-1.9 3.5-1.9 3.8 0 4.5 2.5 4.5 5.7V21h-3.8v-5.8c0-1.4 0-3.1-1.9-3.1s-2.2 1.5-2.2 3V21H9.7V9Z"/></svg></a>
       <a data-share="x" aria-label="Share on X" title="Share on X" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.9 2H22l-6.8 7.8L23.2 22H17l-4.9-7.4L5.6 22H2.4l8.3-9.5L2.8 2h6.4l4.5 6.9L18.9 2ZM17.5 20h1.7L8.3 4H6.5l11 16Z"/></svg></a>

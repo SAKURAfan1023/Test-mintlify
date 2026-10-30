@@ -254,6 +254,7 @@ html[data-page-mode='custom'] #content-container > div.flex { padding-top: 0; }
 :is(.article-publisher, .article-reader) * { box-sizing: border-box; }
 :is(.article-publisher, .article-reader) a { text-decoration: none; }
 :is(.article-publisher, .article-reader) :is(a, button, summary, input):focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+.article-publisher-label { margin: 0 0 12px; color: var(--muted); font-size: 12px; line-height: 1.5; }
 .article-publisher-brand { display: inline-flex; }
 .article-publisher-brand img { display: block; width: 104px; height: auto; }
 .article-share { margin-top: 28px; }
@@ -287,7 +288,7 @@ html[data-page-mode='custom'] #content-container > div.flex { padding-top: 0; }
   .article-reading > #content { grid-column: 1; grid-row: 4; margin-top: 0 !important; }
   .article-publisher, .article-reader { position: static; grid-column: 1; margin-top: 0; }
   .article-publisher { grid-row: 2; margin-top: 24px; padding-block: 16px; border-top: 1px solid var(--line); }
-  .article-publisher-brand { display: none; }
+  .article-publisher-brand, .article-publisher-label { display: none; }
   .article-share { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 0; }
   .article-share > p { margin: 0; }
   .article-share-buttons :is(a, button) { flex-basis: 44px; width: 44px; height: 44px; }
