@@ -10,6 +10,150 @@
   let revision = 0;
   const cardCache = new Map();
   const chunkLoads = new Map();
+  let articleContent;
+  let articleHeadingKey;
+  let clearArticle = () => {};
+  let syncArticlePosition = () => {};
+  const articleHeadings = content => [...content.querySelectorAll('h2[id]')].filter(heading => !heading.closest('.card'));
+  const headingKey = content => articleHeadings(content).map(heading => `${heading.id}:${heading.textContent}`).join('|');
+  function mountArticle(content) {
+    const isArticle = /^\/(cases|news)\/(?!list(?:\/|$))[^/]+\/?$/.test(location.pathname);
+    if (!isArticle || !content) {
+      clearArticle(); articleContent = null; articleHeadingKey = null;
+      return;
+    }
+    const key = `${location.pathname}:${headingKey(content)}`;
+    if (content === articleContent && key === articleHeadingKey) return;
+    clearArticle();
+    articleContent = content; articleHeadingKey = key;
+    const area = content.closest('#content-area');
+    const layout = area?.closest('#content-container')?.parentElement;
+    if (!area || !layout) return;
+    layout.classList.add('article-layout');
+    area.classList.add('article-reading');
+    const left = document.createElement('aside');
+    left.className = 'article-publisher';
+    left.setAttribute('aria-label', 'Publisher and sharing');
+    left.innerHTML = `<a class="article-publisher-brand" href="https://www.textin.ai" aria-label="TextIn website"><img src="/images/brand/logo-dark.webp" alt="TextIn" width="104" /></a>
+      <div class="article-share"><p>Share article</p><div class="article-share-buttons">
+      <a data-share="linkedin" aria-label="Share on LinkedIn" title="Share on LinkedIn" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5.4 3a2.4 2.4 0 1 0 0 4.8 2.4 2.4 0 0 0 0-4.8ZM3.5 9h3.8v12H3.5V9Zm6.2 0h3.6v1.6h.1c.5-.9 1.7-1.9 3.5-1.9 3.8 0 4.5 2.5 4.5 5.7V21h-3.8v-5.8c0-1.4 0-3.1-1.9-3.1s-2.2 1.5-2.2 3V21H9.7V9Z"/></svg></a>
+      <a data-share="x" aria-label="Share on X" title="Share on X" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.9 2H22l-6.8 7.8L23.2 22H17l-4.9-7.4L5.6 22H2.4l8.3-9.5L2.8 2h6.4l4.5 6.9L18.9 2ZM17.5 20h1.7L8.3 4H6.5l11 16Z"/></svg></a>
+      <button type="button" aria-label="Copy article link" title="Copy article link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="m10 13 4-4m-5 6-1 1a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0m0 3 1-1a4 4 0 0 1 6 6l-4 4a4 4 0 0 1-6 0" transform="translate(1 1)"/></svg></button>
+      </div><span class="article-share-status" role="status"></span><input class="article-copy-fallback" aria-label="Article link to copy" readonly hidden /></div>`;
+    // og:image is generated from the configured site domain, including in local previews.
+    const coverUrl = document.querySelector('meta[property="og:image"]')?.content;
+    const shareUrl = new URL(location.pathname, coverUrl || location.origin).href;
+    const cover = [...content.querySelectorAll('img')].find(image => new URL(image.src).pathname === (coverUrl && new URL(coverUrl).pathname));
+    cover?.classList.add('article-cover');
+    const title = document.querySelector('#page-title')?.textContent.trim() || document.title;
+    left.querySelector('[data-share="linkedin"]').href = `https://www.linkedin.com/sharing/share-offsite/?${new URLSearchParams({ url: shareUrl })}`;
+    left.querySelector('[data-share="x"]').href = `https://twitter.com/intent/tweet?${new URLSearchParams({ url: shareUrl, text: title })}`;
+    let copyTimer;
+    left.querySelector('button').addEventListener('click', async () => {
+      const status = left.querySelector('[role="status"]');
+      const button = left.querySelector('button');
+      clearTimeout(copyTimer);
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        if (!left.isConnected) return;
+        button.dataset.copied = 'true';
+        status.textContent = 'Link copied';
+        copyTimer = setTimeout(() => { delete button.dataset.copied; status.textContent = ''; }, 2400);
+      } catch {
+        const input = left.querySelector('input');
+        input.value = shareUrl; input.hidden = false; input.focus(); input.select();
+        status.textContent = 'Select and copy the link below';
+      }
+    });
+    const right = document.createElement('aside');
+    right.className = 'article-reader';
+    right.setAttribute('aria-label', 'Article navigation and contact');
+    right.innerHTML = `<details class="article-toc"><summary>In this article<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><nav aria-label="In this article"></nav></details><div class="article-reader-cta"><a class="article-start" href="https://www.textin.ai/user/register?redirect=%2Fconsole%2Fdashboard%2Foverview">Start for free</a><a class="article-contact" href="https://www.textin.ai/contact">Contact us</a></div>`;
+    const headings = articleHeadings(content);
+    const nav = right.querySelector('nav');
+    const links = headings.map(heading => {
+      const link = document.createElement('a');
+      link.href = `#${heading.id}`;
+      link.textContent = heading.textContent.replace(/\u200b/g, '').trim();
+      nav.append(link);
+      return link;
+    });
+    const syncIndicator = () => {
+      const current = nav.querySelector('[aria-current="location"]');
+      if (!current || !nav.clientHeight) return;
+      nav.style.setProperty('--toc-active-top', `${current.offsetTop}px`);
+      nav.style.setProperty('--toc-active-height', `${current.offsetHeight}px`);
+      if (!nav.dataset.indicatorReady) {
+        // Place the initial marker before enabling transitions.
+        nav.getBoundingClientRect();
+        nav.dataset.indicatorReady = 'true';
+      }
+    };
+    const details = right.querySelector('details');
+    details.hidden = !headings.length;
+    const desktop = matchMedia('(min-width: 1200px)');
+    const syncBreakpoint = () => { details.open = desktop.matches; };
+    syncBreakpoint(); desktop.addEventListener('change', syncBreakpoint);
+    area.append(left, right);
+    const syncOffset = () => {
+      const metadata = content.querySelector('.article-meta-line');
+      const offset = metadata ? metadata.getBoundingClientRect().bottom - content.getBoundingClientRect().top + parseFloat(getComputedStyle(metadata).marginBottom) + parseFloat(getComputedStyle(content).marginTop) : 32;
+      area.style.setProperty('--article-rail-offset', `${Math.max(32, offset)}px`);
+    };
+    const resize = new ResizeObserver(() => { syncOffset(); syncArticlePosition(); syncIndicator(); });
+    resize.observe(nav);
+    links.forEach(link => resize.observe(link));
+    details.addEventListener('toggle', syncIndicator);
+    const header = area.querySelector('#header');
+    if (header) resize.observe(header);
+    const metadata = content.querySelector('.article-meta-line');
+    if (metadata) resize.observe(metadata);
+    if (cover) resize.observe(cover);
+    syncOffset();
+    let activeIndex = -1;
+    let navigating = false;
+    const activate = active => {
+      if (active === activeIndex) return;
+      activeIndex = active;
+      links.forEach((link, index) => {
+        if (index === active) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+      syncIndicator();
+    };
+    syncArticlePosition = () => {
+      if (navigating) return;
+      let active = 0;
+      headings.forEach(({ id }, index) => { if (document.getElementById(id)?.getBoundingClientRect().top <= 140) active = index; });
+      activate(active);
+    };
+    nav.addEventListener('click', event => {
+      const index = links.indexOf(event.target.closest('a'));
+      if (index < 0 || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      navigating = true;
+      activate(index);
+    });
+    const resumeTracking = () => { navigating = false; syncArticlePosition(); };
+    const resumeOnKey = event => { if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) resumeTracking(); };
+    document.addEventListener('scrollend', resumeTracking);
+    window.addEventListener('wheel', resumeTracking, { passive: true });
+    window.addEventListener('touchstart', resumeTracking, { passive: true });
+    window.addEventListener('keydown', resumeOnKey);
+    syncArticlePosition();
+    clearArticle = () => {
+      document.removeEventListener('scrollend', resumeTracking);
+      window.removeEventListener('wheel', resumeTracking);
+      window.removeEventListener('touchstart', resumeTracking);
+      window.removeEventListener('keydown', resumeOnKey);
+      resize.disconnect(); desktop.removeEventListener('change', syncBreakpoint); clearTimeout(copyTimer);
+      left.remove(); right.remove();
+      cover?.classList.remove('article-cover');
+      area.classList.remove('article-reading'); area.style.removeProperty('--article-rail-offset');
+      layout.classList.remove('article-layout');
+      syncArticlePosition = () => {};
+      clearArticle = () => {};
+    };
+  }
   const listPath = (kind, page) => `/${kind}/list${page === 1 ? '' : `/${page}`}`;
   const normalize = value => value.toLocaleLowerCase('en-US').replace(/\s+/g, ' ').trim();
   const state = () => ({
@@ -227,7 +371,7 @@
   let headerFrame;
   function scheduleHeader() {
     if (headerFrame) return;
-    headerFrame = requestAnimationFrame(() => { headerFrame = null; syncHeader(); });
+    headerFrame = requestAnimationFrame(() => { headerFrame = null; syncHeader(); syncArticlePosition(); });
   }
   window.addEventListener('scroll', scheduleHeader, { passive: true });
   window.addEventListener('resize', scheduleHeader, { passive: true });
@@ -252,6 +396,7 @@
         cta.querySelector('[data-component-part="card-cta"] button')?.classList.add('site-button');
       }
     }
+    mountArticle(content);
     const footer = document.querySelector('#footer > div');
     if (footer && !footer.querySelector('.footer-copyright')) {
       const copyright = document.createElement('p');
@@ -350,7 +495,8 @@
   // Local MDX hot updates can replace the catalog without a navigation event.
   new MutationObserver(() => {
     const next = document.querySelector('[data-content-catalog]');
-    if (next !== catalog || next?.dataset.catalogIndex !== catalogIndex) mount();
+    const content = document.querySelector('#content');
+    if (next !== catalog || next?.dataset.catalogIndex !== catalogIndex || content !== articleContent && /^\/(cases|news)\/(?!list(?:\/|$))[^/]+\/?$/.test(location.pathname) || articleContent?.isConnected && `${location.pathname}:${headingKey(articleContent)}` !== articleHeadingKey) mount();
   }).observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['data-catalog-index'] });
   window.addEventListener('mintlify:navigate', mount);
   window.addEventListener('load', mount, { once: true });
